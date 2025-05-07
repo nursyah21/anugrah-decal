@@ -3,6 +3,7 @@ import Index from "./pages"
 import Dashboard from "./pages/dashboard/dashboard"
 import Product from "./pages/dashboard/product"
 import Sales from "./pages/dashboard/sales"
+import DashboardIndex from "./pages/dashboard/dashboardIndex"
 
 function App() {
   // const navigate = useNavigate()
@@ -13,9 +14,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
 
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/product" element={<Product />} />
-        <Route path="/dashboard/sales" element={<Sales />} />
+        <Route path="/dashboard" element={<Dashboard />} >
+          <Route index element={<DashboardIndex />} />
+          <Route path="product" element={<Product />} />
+          <Route path="sales" element={<Sales />} />
+        </Route>
+        
       </Routes>
     </BrowserRouter>
   )
