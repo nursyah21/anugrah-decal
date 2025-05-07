@@ -10,7 +10,7 @@ function Dashboard() {
                 <div className="flex gap-x-4">
                     <Link className="font-bold hover:opacity-60" to="/dashboard">Dashboard</Link>
                     <Link className="font-bold hover:opacity-60" to="/dashboard/product">Product</Link>
-                    <Link className="font-bold hover:opacity-60" href="/dashboard/sales">Sales</Link>
+                    <Link className="font-bold hover:opacity-60" to="/dashboard/sales">Sales</Link>
                 </div>
                 <button><MaterialSymbolsLogout className='text-white hover:opacity-80' /></button>
             </div>

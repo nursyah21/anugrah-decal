@@ -6,8 +6,6 @@ import Sales from "./pages/dashboard/sales"
 import DashboardIndex from "./pages/dashboard/dashboardIndex"
 
 function App() {
-  // const navigate = useNavigate()
-
 
   return (
     <BrowserRouter>
