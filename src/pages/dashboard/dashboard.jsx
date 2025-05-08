@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Link, NavLink, Outlet } from "react-router";
-import decal from '../../assets/adecal1.png'
+import { signOut } from "@firebase/auth";
 import { LogOut, Menu, X } from "lucide-react";
+import React, { useState } from "react";
+import { NavLink, Outlet } from "react-router";
+import decal from '../../assets/adecal1.png';
+import { auth } from "../../firebase";
 
 function Dashboard() {
     const [openMenu, setOpenMenu] = useState(false)
@@ -31,7 +33,7 @@ function Dashboard() {
                     : <></>
             }
 
-            <button className="hover:opacity-60" onClick={() => { console.log('logout') }}>
+            <button className="hover:opacity-60" onClick={() => { signOut(auth) }}>
                 <LogOut />
             </button>
         </div>
