@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router"
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router"
 import Index from "./pages"
 import Dashboard from "./pages/dashboard/dashboard"
 import Product from "./pages/dashboard/product"
@@ -8,7 +8,7 @@ import DashboardIndex from "./pages/dashboard/dashboardIndex"
 function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Index />} />
 
@@ -19,7 +19,7 @@ function App() {
         </Route>
         
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
