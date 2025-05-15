@@ -1,35 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { db } from "../../firebase";
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "@firebase/firestore";
 import toast from "react-hot-toast";
+import useSWR, { mutate } from "swr";
+
+const fetcher = async () => {
+    const querySnapshot = await getDocs(collection(db, "products"));
+    return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+};
 
 function Product() {
-    const [products, setProducts] = useState([]);
+    const { data: products, error, isLoading } = useSWR('products', fetcher);
     const [editingProduct, setEditingProduct] = useState(null);
     const { register, handleSubmit, reset, setValue, watch } = useForm();
-    const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-    useEffect(() => {
-        setLoading(true)
-        fetchProducts().then(() => setLoading(false));
-    }, []);
-
-    const fetchProducts = async () => {
-        try {
-            const querySnapshot = await getDocs(collection(db, "products"));
-            const productsData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setProducts(productsData);
-        } catch (error) {
-            console.log(error)
-            toast.error("Error fetching products");
-        }
-    };
 
     const handleImageUpload = (file) => {
         return new Promise((resolve, reject) => {
@@ -50,12 +39,10 @@ function Product() {
 
     const onSubmit = async (data) => {
         try {
-            setLoading(true);
             const imageBase64 = data.image[0] ? await handleImageUpload(data.image[0]) : editingProduct?.image;
 
             if (!imageBase64 && !editingProduct) {
                 toast.error("Image is required");
-                setLoading(false);
                 return;
             }
 
@@ -81,13 +68,11 @@ function Product() {
 
             reset();
             setEditingProduct(null);
-            fetchProducts();
             handleCloseModal();
+            mutate('products'); // Revalidate the data using SWR
         } catch (error) {
             toast.error("Error saving product");
             console.log(error)
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -96,7 +81,7 @@ function Product() {
             try {
                 await deleteDoc(doc(db, "products", id));
                 toast.success("Product deleted successfully");
-                fetchProducts();
+                mutate('products'); // Revalidate the products data
             } catch (error) {
                 toast.error("Error deleting product");
                 console.log(error)
@@ -126,16 +111,18 @@ function Product() {
 
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold">Product</h2>
-                {
-                    !loading &&
+                {!isLoading && (
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                     >
                         Add New Product
                     </button>
-                }
+                )}
             </div>
+
+            {error && <div className="text-red-500">Failed to load products</div>}
+            {isLoading && <div>Loading...</div>}
 
             {/* Modal */}
             {isModalOpen && (
@@ -160,7 +147,7 @@ function Product() {
                             </div>
 
                             <div>
-                                <label className="block mb-2">Image:
+                                <label className="block mb-2">Image: *max 512kb
                                     {watch("image") && watch("image").length > 0 && (
                                         <img
                                             src={URL.createObjectURL(watch("image")[0])}
@@ -203,10 +190,10 @@ function Product() {
 
                             <button
                                 type="submit"
-                                disabled={loading}
+                                disabled={isLoading}
                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
                             >
-                                {loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+                                {isLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
                             </button>
                         </form>
                     </div>
@@ -215,7 +202,7 @@ function Product() {
 
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                {products.map(product => (
+                {products?.map(product => (
                     <div key={product.id} className="border p-4 rounded">
                         <img src={product.image} alt={product.name} className="w-full h-24 object-cover mb-2" />
                         <h3 className="font-bold">{product.name}</h3>
