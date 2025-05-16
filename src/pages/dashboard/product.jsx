@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "@firebase/firestore";
+import { Edit, Trash, X } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { db } from "../../firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "@firebase/firestore";
 import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
-import { Edit, X, Delete } from "lucide-react";
+import { db } from "../../firebase";
 
 const fetcher = async () => {
     const querySnapshot = await getDocs(collection(db, "products"));
@@ -34,13 +34,23 @@ function Product() {
                 name: data.name,
                 description: data.description,
                 image: imageBase64,
+                category: data.category,
+                merk: data.merk,
+                model: data.model,
                 laminating: [
-                    { name: data.laminatingName, price: Number(data.laminatingPrice) }
+                    ...Object.entries(data.laminatingPrices || {}).map(([key, value]) => ({
+                        name: key,
+                        price: Number(value)
+                    })),
                 ],
                 materials: [
-                    { name: data.materialName, price: Number(data.materialPrice) }
+                     ...Object.entries(data.materialPrices || {}).map(([key, value]) => ({
+                        name: key,
+                        price: Number(value)
+                    })),
                 ]
             };
+            console.log(productData)
 
             if (editingProduct) {
                 await updateDoc(doc(db, "products", editingProduct.id), productData);
@@ -94,7 +104,7 @@ function Product() {
     return (
         <div className="p-4">
 
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex gap-x-4  items-center mb-4">
                 <h2 className="text-2xl font-semibold">Product</h2>
                 {!isLoading && (
                     <button
@@ -166,7 +176,7 @@ function Product() {
 
                             <div>
                                 <label className="block mb-2">Category:</label>
-                                <select {...register("merk")} className="w-full p-2 border rounded" required>
+                                <select {...register("category")} className="w-full p-2 border rounded" required>
                                     <option value="">Select Category</option>
                                     {["Category A", "Category B", "Category C"].map((option) => 
                                         <option key={option} value={option}>{option}</option>
@@ -211,7 +221,7 @@ function Product() {
                                     </div>
                                     {/* Render an input to update the price for each selected option */}
                                     {(watch("laminatedOptions") || []).map((option) => (
-                                        <label htmlFor="option">
+                                        <label key={option} htmlFor="option">
                                             {option}
                                             <input
                                                 key={option}
@@ -244,7 +254,7 @@ function Product() {
                                     </div>
                                     {/* Render an input to update the price for each selected option */}
                                     {(watch("bahanOptions") || []).map((option) => (
-                                        <label htmlFor="option">
+                                        <label key={option} htmlFor="option">
                                             {option}
                                             <input
                                                 type="number"
@@ -271,7 +281,7 @@ function Product() {
             )}
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl w-screen ">
                 {products?.map(product => (
                     <div key={product.id} className="border p-4 rounded">
                         <img src={product.image} alt={product.name} className="w-full h-24 object-cover mb-2" />
@@ -304,7 +314,7 @@ function Product() {
                                 onClick={() => handleDelete(product.id)}
                                 className="bg-red-500 text-white px-2 py-1 hover:opacity-60 rounded"
                             >
-                                <Delete size={20} />
+                                <Trash size={20} />
                             </button>
                         </div>
                     </div>
