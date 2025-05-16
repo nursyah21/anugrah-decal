@@ -43,8 +43,8 @@ function Product() {
                         price: Number(value)
                     })),
                 ],
-                materials: [
-                     ...Object.entries(data.materialPrices || {}).map(([key, value]) => ({
+                bahan: [
+                    ...Object.entries(data.bahanPrices || {}).map(([key, value]) => ({
                         name: key,
                         price: Number(value)
                     })),
@@ -87,11 +87,12 @@ function Product() {
         setEditingProduct(product);
         setValue("name", product.name);
         setValue("description", product.description);
+        setValue("category", product.category);
+        setValue("merk", product.merk);
+        setValue("model", product.model);
         setValue("image", product.image);
-        setValue("laminatingName", product.laminating[0]?.name);
-        setValue("laminatingPrice", product.laminating[0]?.price);
-        setValue("materialName", product.materials[0]?.name);
-        setValue("materialPrice", product.materials[0]?.price);
+        setValue("laminatingPrice", product.laminating);
+        setValue("bahanPrice", product.bahan);
         setIsModalOpen(true);
     };
 
@@ -102,14 +103,14 @@ function Product() {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-4 container">
 
-            <div className="flex gap-x-4  items-center mb-4">
+            <div className="flex justify-between gap-x-4  items-center mb-4">
                 <h2 className="text-2xl font-semibold">Product</h2>
                 {!isLoading && (
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                        className="btn btn-primary"
                     >
                         Add New Product
                     </button>
@@ -121,7 +122,7 @@ function Product() {
 
             {/* Modal */}
             {isModalOpen && (
-                <div onClick={handleCloseModal} className="fixed inset-0 bg-[rgba(0,0,0,.8)] bg-opacity-20 flex items-center justify-center z-50">
+                <div onClick={handleCloseModal} className="fixed inset-0 bg-[rgba(0,0,0,.7)] bg-opacity-20 flex items-center justify-center z-50">
                     <div onClick={e => e.stopPropagation()} className="bg-white rounded-lg p-8 w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-semibold">
@@ -164,7 +165,12 @@ function Product() {
                                             setValue('image', null)
                                             return;
                                         }
-                                        setValue('imageChange', URL.createObjectURL(file))
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            setValue("imageChange", reader.result);
+                                        };
+                                        reader.readAsDataURL(file);
+                                        // setValue('imageChange', URL.createObjectURL(file))
                                     }}
                                 />
                             </div>
@@ -178,7 +184,7 @@ function Product() {
                                 <label className="block mb-2">Category:</label>
                                 <select {...register("category")} className="w-full p-2 border rounded" required>
                                     <option value="">Select Category</option>
-                                    {["Category A", "Category B", "Category C"].map((option) => 
+                                    {["Category A", "Category B", "Category C"].map((option) =>
                                         <option key={option} value={option}>{option}</option>
                                     )}
                                 </select>
@@ -188,7 +194,7 @@ function Product() {
                                 <label className="block mb-2">Merk:</label>
                                 <select {...register("merk")} className="w-full p-2 border rounded" required>
                                     <option value="">Select Merk</option>
-                                    {["Brand A", "Brand B", "Brand C"].map((option) => 
+                                    {["Brand A", "Brand B", "Brand C"].map((option) =>
                                         <option key={option} value={option}>{option}</option>
                                     )}
                                 </select>
@@ -198,7 +204,7 @@ function Product() {
                                 <label className="block mb-2">Model:</label>
                                 <select {...register("model")} className="w-full p-2 border rounded" required>
                                     <option value="">Select Model</option>
-                                    {["Model A", "Model B", "Model C"].map((option) => 
+                                    {["Model A", "Model B", "Model C"].map((option) =>
                                         <option key={option} value={option}>{option}</option>
                                     )}
                                 </select>
@@ -207,7 +213,7 @@ function Product() {
                             <div>
                                 <h3 className="font-bold mb-2">Laminating</h3>
                                 <div className="space-y-2">
-                                    <div className="flex items-center space-x-4 overflow-x-scroll">
+                                    <div className="flex px-2 items-center space-x-4 overflow-x-scroll">
                                         {["Glossy", "Matte", "Satin"].map((option) => (
                                             <label key={option} className="inline-flex items-center">
                                                 <input
@@ -219,7 +225,6 @@ function Product() {
                                             </label>
                                         ))}
                                     </div>
-                                    {/* Render an input to update the price for each selected option */}
                                     {(watch("laminatedOptions") || []).map((option) => (
                                         <label key={option} htmlFor="option">
                                             {option}
@@ -228,7 +233,7 @@ function Product() {
                                                 type="number"
                                                 placeholder={`Price for ${option}`}
                                                 {...register(`laminatingPrices.${option}`)}
-                                                className="w-full p-2 border rounded"
+                                                className="w-full p-2 mb-2 border rounded"
                                                 required
                                             />
                                         </label>
@@ -239,8 +244,7 @@ function Product() {
                             <div>
                                 <h3 className="font-bold mb-2">Bahan</h3>
                                 <div className="space-y-2">
-                                    {/* Render checkboxes dynamically using map */}
-                                    <div className="flex items-center space-x-4 overflow-x-scroll">
+                                    <div className="flex px-2 items-center space-x-4 overflow-x-scroll">
                                         {["Bahan1", "Bahan2", "Bahan3"].map((option) => (
                                             <label key={option} className="inline-flex items-center">
                                                 <input
@@ -252,7 +256,6 @@ function Product() {
                                             </label>
                                         ))}
                                     </div>
-                                    {/* Render an input to update the price for each selected option */}
                                     {(watch("bahanOptions") || []).map((option) => (
                                         <label key={option} htmlFor="option">
                                             {option}
@@ -260,7 +263,7 @@ function Product() {
                                                 type="number"
                                                 placeholder={`Price for ${option}`}
                                                 {...register(`bahanPrices.${option}`)}
-                                                className="w-full p-2 border rounded"
+                                                className="w-full p-2 mb-2 border rounded"
                                                 required
                                             />
                                         </label>
@@ -271,7 +274,7 @@ function Product() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="bg-blue-500  text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                                className="btn btn-primary"
                             >
                                 {isLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
                             </button>
@@ -281,44 +284,70 @@ function Product() {
             )}
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl w-screen ">
-                {products?.map(product => (
-                    <div key={product.id} className="border p-4 rounded">
-                        <img src={product.image} alt={product.name} className="w-full h-24 object-cover mb-2" />
-                        <h3 className="font-bold">{product.name}</h3>
-                        <p className="text-sm">{product.description}</p>
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white text-center">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="p-4 text-left">#</th>
+                            <th className="p-4 text-left">Image</th>
+                            <th className="p-4 text-left">Name</th>
+                            <th className="p-4 text-left">Description</th>
+                            <th className="p-4 text-left">Category</th>
+                            <th className="p-4 text-left">Merk</th>
+                            <th className="p-4 text-left">Model</th>
+                            <th className="p-4 text-left">Price</th>
+                            <th className="p-4 text-left">Actions</th>
 
-                        {
-                            (() => {
-                                const laminatingPrices = product.laminating.map(item => item.price);
-                                const materialPrices = product.materials.map(item => item.price);
-                                const lowestLaminating = Math.min(...laminatingPrices);
-                                const lowestMaterial = Math.min(...materialPrices);
-                                const total = lowestLaminating + lowestMaterial;
-                                return (
-                                    <h4 className="font-semibold">
-                                        Rp. {total}
-                                    </h4>
-                                );
-                            })()
-                        }
-
-                        <div className="mt-4 space-x-2 justify-end flex">
-                            <button
-                                onClick={() => handleEdit(product)}
-                                className="bg-yellow-500 text-white px-2 py-1 hover:opacity-60 rounded"
-                            >
-                                <Edit size={20} />
-                            </button>
-                            <button
-                                onClick={() => handleDelete(product.id)}
-                                className="bg-red-500 text-white px-2 py-1 hover:opacity-60 rounded"
-                            >
-                                <Trash size={20} />
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products?.map((product, id) => (
+                            <tr key={product.id} className="border-b hover:bg-gray-50">
+                                <td>
+                                    {id + 1}
+                                </td>
+                                <td className="p-4">
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-24 h-24 object-cover rounded"
+                                    />
+                                </td>
+                                <td className="p-4 "> {product.name}  </td>
+                                <td className="p-4">{product.description}</td>
+                                <td className="p-4">{product.category}</td>
+                                <td className="p-4">{product.merk}</td>
+                                <td className="p-4">{product.model}</td>
+                                <td className="p-4">
+                                    {(() => {
+                                        const total = Math.min(...product.laminating.map(item => item.price)) + Math.min(...product.bahan.map(item => item.price));
+                                        return (
+                                            <span className="font-semibold">
+                                                Rp. {total.toLocaleString()}
+                                            </span>
+                                        );
+                                    })()}
+                                </td>
+                                <td className="p-4">
+                                    <div className="flex flex-col gap-2 justify-center items-center">
+                                        <button
+                                            onClick={() => handleEdit(product)}
+                                            className="btn-warning btn"
+                                        >
+                                            <Edit size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(product.id)}
+                                            className="btn-danger btn"
+                                        >
+                                            <Trash size={16} />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

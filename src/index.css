@@ -1,1 +1,25 @@
-@import 'tailwindcss'
+@import 'tailwindcss';
+
+.btn{
+    @apply  rounded-xl p-2 px-4;
+}
+
+.center{
+    @apply flex justify-center h-screen items-center
+}
+
+.btn-primary {
+    @apply bg-green-600 text-white;
+}
+
+.btn-danger {
+    @apply bg-red-600 text-white;
+}
+
+.btn-warning {
+    @apply bg-yellow-400 text-white;
+}
+
+.btn:hover {
+    @apply opacity-70;
+}
