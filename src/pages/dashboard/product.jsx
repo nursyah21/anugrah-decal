@@ -4,6 +4,7 @@ import { db } from "../../firebase";
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "@firebase/firestore";
 import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
+import { Edit, X, Delete } from "lucide-react";
 
 const fetcher = async () => {
     const querySnapshot = await getDocs(collection(db, "products"));
@@ -19,27 +20,10 @@ function Product() {
     const { register, handleSubmit, reset, setValue, watch } = useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-
-    const handleImageUpload = (file) => {
-        return new Promise((resolve, reject) => {
-            if (!file) return resolve(null);
-
-            // Check file size (512KB = 512 * 1024 bytes)
-            if (file.size > 512 * 1024) {
-                toast.error("File size must be less than 512KB");
-                return resolve(null);
-            }
-
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
-    };
-
     const onSubmit = async (data) => {
         try {
-            const imageBase64 = data.image[0] ? await handleImageUpload(data.image[0]) : editingProduct?.image;
+            console.log(data)
+            const imageBase64 = watch('imageChange') ?? data.image
 
             if (!imageBase64 && !editingProduct) {
                 toast.error("Image is required");
@@ -93,6 +77,7 @@ function Product() {
         setEditingProduct(product);
         setValue("name", product.name);
         setValue("description", product.description);
+        setValue("image", product.image);
         setValue("laminatingName", product.laminating[0]?.name);
         setValue("laminatingPrice", product.laminating[0]?.price);
         setValue("materialName", product.materials[0]?.name);
@@ -126,8 +111,8 @@ function Product() {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-[rgba(0,0,0,.8)] bg-opacity-20 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-8 w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div onClick={handleCloseModal} className="fixed inset-0 bg-[rgba(0,0,0,.8)] bg-opacity-20 flex items-center justify-center z-50">
+                    <div onClick={e => e.stopPropagation()} className="bg-white rounded-lg p-8 w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-semibold">
                                 {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -136,7 +121,7 @@ function Product() {
                                 onClick={handleCloseModal}
                                 className="text-gray-500 hover:text-gray-700"
                             >
-                                ✕
+                                <X />
                             </button>
                         </div>
 
@@ -148,11 +133,11 @@ function Product() {
 
                             <div>
                                 <label className="block mb-2">Image: *max 512kb
-                                    {watch("image") && watch("image").length > 0 && (
+                                    {(watch("image")?.length > 0 || watch("imageChange")?.length > 0) && (
                                         <img
-                                            src={URL.createObjectURL(watch("image")[0])}
+                                            src={watch('imageChange') || watch("image")}
                                             alt="Image Preview"
-                                            className="mt-2 w-32 h-32 object-cover"
+                                            className={`mt-2 w-32 h-32 object-cover`}
                                         />
                                     )}
                                 </label>
@@ -162,6 +147,15 @@ function Product() {
                                     {...register("image")}
                                     className="w-full p-2 border rounded"
                                     required={!editingProduct}
+                                    onChange={(e) => {
+                                        const file = e.target.files[0]
+                                        if (file.size > 512 * 1024) {
+                                            toast.error("File size must be less than 512KB");
+                                            setValue('image', null)
+                                            return;
+                                        }
+                                        setValue('imageChange', URL.createObjectURL(file))
+                                    }}
                                 />
                             </div>
 
@@ -170,28 +164,104 @@ function Product() {
                                 <textarea {...register("description")} className="w-full p-2 border rounded" required />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <h3 className="font-bold mb-2">Laminating</h3>
-                                    <div className="space-y-2">
-                                        <input {...register("laminatingName")} placeholder="Name" className="w-full p-2 border rounded" required />
-                                        <input type="number" {...register("laminatingPrice")} placeholder="Price" className="w-full p-2 border rounded" required />
-                                    </div>
-                                </div>
+                            <div>
+                                <label className="block mb-2">Category:</label>
+                                <select {...register("merk")} className="w-full p-2 border rounded" required>
+                                    <option value="">Select Category</option>
+                                    {["Category A", "Category B", "Category C"].map((option) => 
+                                        <option key={option} value={option}>{option}</option>
+                                    )}
+                                </select>
+                            </div>
 
-                                <div>
-                                    <h3 className="font-bold mb-2">Material</h3>
-                                    <div className="space-y-2">
-                                        <input {...register("materialName")} placeholder="Name" className="w-full p-2 border rounded" required />
-                                        <input type="number" {...register("materialPrice")} placeholder="Price" className="w-full p-2 border rounded" required />
+                            <div>
+                                <label className="block mb-2">Merk:</label>
+                                <select {...register("merk")} className="w-full p-2 border rounded" required>
+                                    <option value="">Select Merk</option>
+                                    {["Brand A", "Brand B", "Brand C"].map((option) => 
+                                        <option key={option} value={option}>{option}</option>
+                                    )}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block mb-2">Model:</label>
+                                <select {...register("model")} className="w-full p-2 border rounded" required>
+                                    <option value="">Select Model</option>
+                                    {["Model A", "Model B", "Model C"].map((option) => 
+                                        <option key={option} value={option}>{option}</option>
+                                    )}
+                                </select>
+                            </div>
+
+                            <div>
+                                <h3 className="font-bold mb-2">Laminating</h3>
+                                <div className="space-y-2">
+                                    <div className="flex items-center space-x-4 overflow-x-scroll">
+                                        {["Glossy", "Matte", "Satin"].map((option) => (
+                                            <label key={option} className="inline-flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    value={option}
+                                                    {...register("laminatedOptions")}
+                                                />
+                                                <span className="ml-2">{option}</span>
+                                            </label>
+                                        ))}
                                     </div>
+                                    {/* Render an input to update the price for each selected option */}
+                                    {(watch("laminatedOptions") || []).map((option) => (
+                                        <label htmlFor="option">
+                                            {option}
+                                            <input
+                                                key={option}
+                                                type="number"
+                                                placeholder={`Price for ${option}`}
+                                                {...register(`laminatingPrices.${option}`)}
+                                                className="w-full p-2 border rounded"
+                                                required
+                                            />
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="font-bold mb-2">Bahan</h3>
+                                <div className="space-y-2">
+                                    {/* Render checkboxes dynamically using map */}
+                                    <div className="flex items-center space-x-4 overflow-x-scroll">
+                                        {["Bahan1", "Bahan2", "Bahan3"].map((option) => (
+                                            <label key={option} className="inline-flex items-center">
+                                                <input
+                                                    type="checkbox"
+                                                    value={option}
+                                                    {...register("bahanOptions")}
+                                                />
+                                                <span className="ml-2">{option}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    {/* Render an input to update the price for each selected option */}
+                                    {(watch("bahanOptions") || []).map((option) => (
+                                        <label htmlFor="option">
+                                            {option}
+                                            <input
+                                                type="number"
+                                                placeholder={`Price for ${option}`}
+                                                {...register(`bahanPrices.${option}`)}
+                                                className="w-full p-2 border rounded"
+                                                required
+                                            />
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                                className="bg-blue-500  text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
                             >
                                 {isLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
                             </button>
@@ -223,18 +293,18 @@ function Product() {
                             })()
                         }
 
-                        <div className="mt-4 space-x-2">
+                        <div className="mt-4 space-x-2 justify-end flex">
                             <button
                                 onClick={() => handleEdit(product)}
-                                className="bg-yellow-500 text-white px-3 py-1 rounded"
+                                className="bg-yellow-500 text-white px-2 py-1 hover:opacity-60 rounded"
                             >
-                                Edit
+                                <Edit size={20} />
                             </button>
                             <button
                                 onClick={() => handleDelete(product.id)}
-                                className="bg-red-500 text-white px-3 py-1 rounded"
+                                className="bg-red-500 text-white px-2 py-1 hover:opacity-60 rounded"
                             >
-                                Delete
+                                <Delete size={20} />
                             </button>
                         </div>
                     </div>

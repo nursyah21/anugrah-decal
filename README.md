@@ -6,7 +6,7 @@
 - logout [x]
 - crud merk []
 - crud model []
-- crud product []
+- crud product [x]
     - crud bahan []
     - crud laminating []
 - crud category []
