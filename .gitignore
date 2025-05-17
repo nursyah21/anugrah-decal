@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-test_photo
+test_photo 
 
 node_modules
 dist
