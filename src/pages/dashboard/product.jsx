@@ -17,7 +17,7 @@ const fetcher = async () => {
 };
 
 function Product() {
-    const { data: products, error, isLoading } = useSWR('products', fetcher);
+    const { data: products, isLoading } = useSWR('products', fetcher);
     const [editingProduct, setEditingProduct] = useState(null);
     const { register, handleSubmit, reset, setValue, watch } = useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -113,7 +113,7 @@ function Product() {
         <div className="p-4 container">
 
             <div className="flex justify-between gap-x-4  items-center mb-4">
-                <h2 className="text-2xl font-semibold">Product</h2>
+                <h2 className="text-2xl font-semibold">Product {isLoading && '...'}</h2>
                 {!isLoading && (
                     <button
                         onClick={() => setIsModalOpen(true)}
@@ -123,9 +123,6 @@ function Product() {
                     </button>
                 )}
             </div>
-
-            {error && <div className="text-red-500">Failed to load products</div>}
-            {isLoading && <div>Loading...</div>}
 
             <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={editingProduct ? 'Edit Product' : 'Add New Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -5,6 +5,7 @@ import { NavLink, Outlet } from "react-router";
 import decal from '../../assets/adecal1.png';
 import { auth } from "../../lib/firebase";
 import { useState } from "react";
+import Navlink from "../../components/navlink";
 
 const links = [
     { to: '/dashboard/product', text: 'Product', icon: <Package /> },
@@ -25,13 +26,12 @@ function Dashboard() {
                 <div className="flex gap-y-8 flex-col ">
                     {
                         links.map(data => (
-                            <NavLink key={data.text} end className={({ isActive }) =>
-                                clsx("flex font-bold gap-x-2", { "opacity-60 hover:opacity-100": !isActive })} to={data.to}>
+                            <Navlink key={data.text} to={data.to}>
                                 {data.icon}
-                                <span className={clsx("", { 'hidden': minimize })}>
+                                <span className={clsx({ 'hidden': minimize })}>
                                     {data.text}
                                 </span>
-                            </NavLink>
+                            </Navlink>
                         ))
                     }
                 </div>
@@ -40,7 +40,7 @@ function Dashboard() {
                 <div className="flex h-screen justify-start w-full items-end">
                     <button className="flex gap-4 font-bold hover:opacity-100 opacity-60 " onClick={() => { signOut(auth) }}>
                         <LogOut />
-                        <span className={clsx({ 'hidden': minimize }, )}>
+                        <span className={clsx({ 'hidden': minimize },)}>
                             Logout
                         </span>
                     </button>
