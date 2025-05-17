@@ -1,5 +1,12 @@
 # Anugrah Decal
 
+## check demo web
+[https://test-anugrahdecal.surge.sh](https://test-anugrahdecal.surge.sh)
+
+login admin:
+- email: admin@gmail.com
+- password: password
+
 ## list feature
 
 - login [x]
