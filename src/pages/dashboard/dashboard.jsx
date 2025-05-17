@@ -18,9 +18,9 @@ function Dashboard() {
     return (<>
         <div className="flex">
             <div className="flex h-screen w-fit flex-col  items-center bg-green-800 p-6 py-12 text-white">
-                <div className="flex w-full h-5 mb-12 items-center">
+                <div className="flex w-full h-5 gap-x-2 mb-12 items-center">
                     <Menu onClick={() => setMinimize(!minimize)} className="hover:opacity-100 opacity-60" />
-                    <img src={decal} alt="logo" className={clsx("lg:ml-8 ml-2 w-18 lg:w-24", { 'hidden': minimize })} />
+                    <img src={decal} alt="logo" className={clsx("w-20", { 'hidden': minimize })} />
                 </div>
                 <div className="flex gap-y-8 flex-col ">
                     {

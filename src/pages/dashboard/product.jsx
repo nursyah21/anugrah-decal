@@ -322,7 +322,7 @@ function Product() {
                                     {(() => {
                                         const total = Math.min(...product.laminating.map(item => item.price)) + Math.min(...product.bahan.map(item => item.price));
                                         return (
-                                            <span className="font-semibold">
+                                            <span className="">
                                                 Rp. {total.toLocaleString()}
                                             </span>
                                         );

@@ -1,14 +1,13 @@
-import { lazy, Suspense, useEffect } from "react"
+import { useEffect } from "react"
 import { HashRouter, Navigate, Route, Routes } from "react-router"
 import Login from "./pages/login"
 import useAuthStore from "./store/authStore"
-
-const Dashboard = lazy(() => import("./pages/dashboard/dashboard"))
-const Index = lazy(() => import("./pages"))
-const Customer = lazy(() => import("./pages/dashboard/customer"))
-const Product = lazy(() => import("./pages/dashboard/product"))
-const ProductDetails = lazy(() => import("./pages/dashboard/productDetails"))
-const Transaksi = lazy(() => import("./pages/dashboard/transaksi"))
+import Dashboard from "./pages/dashboard/dashboard"
+import Index from "./pages"
+import Customer from "./pages/dashboard/customer"
+import Product from "./pages/dashboard/product"
+import ProductDetails from "./pages/dashboard/productDetails"
+import Transaksi from "./pages/dashboard/transaksi"
 
 function App() {
   const { user, initializeAuth, loading } = useAuthStore()
@@ -43,7 +42,6 @@ function App() {
 
   return (
     <HashRouter>
-      <Suspense fallback={<div className="center">please wait...</div>}>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
@@ -60,7 +58,6 @@ function App() {
           </Route>
 
         </Routes>
-      </Suspense>
     </HashRouter>
   )
 }
