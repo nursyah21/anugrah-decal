@@ -13,13 +13,12 @@ login admin:
 - logout [x]
 - crud merk [x]
 - crud model [x]
-- crud category []
-- crud bahan []
-- crud laminating []
-- crud product [x]
+- crud category [x]
+- crud bahan [x]
+- crud laminating [x]
+- crud product []
 - crud customer []
-- crud transaction []
-- crud order []
+- crud transaksi []
 
 ## nice to have
 - pagination []

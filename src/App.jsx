@@ -1,19 +1,18 @@
 import { useEffect } from "react"
 import { HashRouter, Navigate, Route, Routes } from "react-router"
-import Login from "./pages/login"
-import useAuthStore from "./store/authStore"
-import Dashboard from "./pages/dashboard/dashboard"
 import Index from "./pages"
 import Customer from "./pages/dashboard/customer"
+import Dashboard from "./pages/dashboard/dashboard"
 import Product from "./pages/dashboard/product"
-import ProductDetails from "./pages/dashboard/productDetails/productDetails"
-import Transaksi from "./pages/dashboard/transaksi"
-import Merk from "./pages/dashboard/productDetails/merk"
-import Laminating from "./pages/dashboard/productDetails/laminating"
-import Model from "./pages/dashboard/productDetails/model"
 import Bahan from "./pages/dashboard/productDetails/bahan"
 import Kategori from "./pages/dashboard/productDetails/kategori"
-import Order from "./pages/dashboard/order"
+import Laminating from "./pages/dashboard/productDetails/laminating"
+import Merk from "./pages/dashboard/productDetails/merk"
+import Model from "./pages/dashboard/productDetails/model"
+import ProductDetails from "./pages/dashboard/productDetails/productDetails"
+import Transaksi from "./pages/dashboard/transaksi"
+import Login from "./pages/login"
+import useAuthStore from "./store/authStore"
 
 function App() {
   const { user, initializeAuth, loading } = useAuthStore()
@@ -70,7 +69,6 @@ function App() {
           
           <Route path="customer" element={<Customer />} />
           <Route path="transaksi" element={<Transaksi />} />
-          <Route path="order" element={<Order />} />
         </Route>
 
       </Routes>

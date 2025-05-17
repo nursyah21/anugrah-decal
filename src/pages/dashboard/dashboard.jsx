@@ -1,18 +1,17 @@
 import { signOut } from "@firebase/auth";
 import clsx from "clsx";
-import { ChartLine, LogOut, Menu, Package, ReceiptText, ShoppingBasket, ShoppingCart, Users } from "lucide-react";
-import { NavLink, Outlet } from "react-router";
-import decal from '../../assets/adecal1.png';
-import { auth } from "../../lib/firebase";
+import { LogOut, Menu, Package, ReceiptText, ShoppingCart, Users } from "lucide-react";
 import { useState } from "react";
+import { Outlet } from "react-router";
+import decal from '../../assets/adecal1.png';
 import Navlink from "../../components/navlink";
+import { auth } from "../../lib/firebase";
 
 const links = [
     { to: '/dashboard/product', text: 'Product', icon: <Package /> },
     { to: '/dashboard/product-details', text: 'Product Details', icon: <ReceiptText /> },
     { to: '/dashboard/customer', text: 'Customer', icon: <Users /> },
-    { to: '/dashboard/transaksi', text: 'Transaksi', icon: <ChartLine /> },
-    { to: '/dashboard/order', text: 'Order', icon: <ShoppingCart /> },
+    { to: '/dashboard/transaksi', text: 'Transaksi', icon: <ShoppingCart /> },
 ]
 
 function Dashboard() {

@@ -31,7 +31,7 @@ function Product() {
             }
 
             const productData = {
-                name: data.name,
+                product: data.product,
                 description: data.description,
                 image: imageBase64,
                 category: data.category,
