@@ -1,6 +1,6 @@
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { useForm } from "react-hook-form";
-import { auth } from "../firebase";
+import { auth } from "../lib/firebase";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import clsx from "clsx";

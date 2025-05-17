@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { LogOut, Menu, Package, ReceiptText, ShoppingCart, Users } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import decal from '../../assets/adecal1.png';
-import { auth } from "../../firebase";
+import { auth } from "../../lib/firebase";
 import { useState } from "react";
 
 const links = [

@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs } from "@firebase/firestore";
 import { Edit, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,12 +6,18 @@ import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Modal from "../../components/modal";
 import Table from "../../components/table";
-import { db } from "../../firebase";
-import { fetcher } from "../../lib/fetcher";
+import { db } from "../../lib/firebase";
 
+const fetcher = async () => {
+    const querySnapshot = await getDocs(collection(db, 'products'));
+    return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+};
 
 function Product() {
-    const { data: products, error, isLoading } = useSWR('products', fetcher('products'));
+    const { data: products, error, isLoading } = useSWR('products', fetcher);
     const [editingProduct, setEditingProduct] = useState(null);
     const { register, handleSubmit, reset, setValue, watch } = useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +64,7 @@ function Product() {
             reset();
             setEditingProduct(null);
             handleCloseModal();
-            mutate('products'); // Revalidate the data using SWR
+            mutate('products');
         } catch (error) {
             toast.error("Error saving product");
             console.log(error)
@@ -70,7 +76,7 @@ function Product() {
             try {
                 await deleteDoc(doc(db, "products", id));
                 toast.success("Product deleted successfully");
-                mutate('products'); // Revalidate the products data
+                mutate('products');
             } catch (error) {
                 toast.error("Error deleting product");
                 console.log(error)
@@ -121,7 +127,7 @@ function Product() {
             {error && <div className="text-red-500">Failed to load products</div>}
             {isLoading && <div>Loading...</div>}
 
-            <Modal isOpen={isModalOpen} handleOpen={handleCloseModal}>
+            <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={editingProduct ? 'Edit Product' : 'Add New Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Name:</label>
