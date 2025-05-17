@@ -12,14 +12,19 @@ login admin:
 - login [x]
 - logout [x]
 - crud merk [x]
-- crud model []
+- crud model [x]
+- crud category []
 - crud bahan []
 - crud laminating []
 - crud product [x]
-- crud category []
 - crud customer []
 - crud transaction []
 - crud order []
 
+## nice to have
+- pagination []
+- search []
+- filter []
+
 ## erd
-![image](./anugrahdecal.jpg)
+![image](./anugrahdecal-erd.png)

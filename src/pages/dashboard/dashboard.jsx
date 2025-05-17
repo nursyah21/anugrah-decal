@@ -16,7 +16,7 @@ const links = [
 ]
 
 function Dashboard() {
-    const [minimize, setMinimize] = useState(false)
+    const [minimize, setMinimize] = useState(true)
     return (<>
         <div className="flex">
             <div className="flex h-screen w-fit flex-col  items-center bg-green-800 p-6 py-12 text-white">

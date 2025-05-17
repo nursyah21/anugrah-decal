@@ -1,24 +1,18 @@
+import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
+import clsx from "clsx";
+import { Edit, Trash } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import useSWR, { mutate } from "swr";
 import Modal from "../../../components/modal";
 import Table from "../../../components/table";
-import { useForm } from "react-hook-form";
-import clsx from "clsx";
-import toast from "react-hot-toast";
-import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "@firebase/firestore";
+import { fetcherMerks } from "../../../lib/fetcher";
 import { db } from "../../../lib/firebase";
-import useSWR, { mutate } from "swr";
-import { Edit, Trash } from "lucide-react";
 
-const fetcher = async () => {
-    const querySnapshot = await getDocs(collection(db, 'merks'));
-    return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-};
 
 function Merk() {
-    const { data, isLoading } = useSWR('merks', fetcher);
+    const { data, isLoading } = useSWR('merks', fetcherMerks);
     const [isOpen, setIsOpen] = useState(false)
     const [id, setId] = useState()
     const [isDelete, setIsDelete] = useState(false)
@@ -65,7 +59,7 @@ function Merk() {
         setIsEditing(true)
     }
 
-    if(isLoading) {
+    if (isLoading) {
         return <>Please wait...</>
     }
 

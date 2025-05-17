@@ -7,11 +7,15 @@ import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Modal from "../../components/modal";
 import Table from "../../components/table";
-import { fetcherProducts } from "../../lib/fetcher";
+import { fetcherKategoris, fetcherMerks, fetcherModels, fetcherProducts } from "../../lib/fetcher";
 import { db } from "../../lib/firebase";
 
 function Product() {
-    const { data: products, isLoading } = useSWR('products', fetcherProducts);
+    const { data: products, isProductsLoading } = useSWR('products', fetcherProducts);
+    const { data: merks, isMerksLoading } = useSWR('merks', fetcherMerks);
+    const { data: models, isModelsLoading } = useSWR('models', fetcherModels);
+    const { data: kategoris, isKategorisLoading } = useSWR('kategoris', fetcherKategoris);
+
     const [editingProduct, setEditingProduct] = useState(null);
     const [isDelete, setIsDelete] = useState(false);
     const { register, handleSubmit, reset, setValue, watch, formState: {isSubmitting} } = useForm();
@@ -74,16 +78,16 @@ function Product() {
         handleEdit(product)
     };
 
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-        setValue("name", product.name);
-        setValue("description", product.description);
-        setValue("category", product.category);
-        setValue("merk", product.merk);
-        setValue("model", product.model);
-        setValue("image", product.image);
-        setValue("laminatingPrice", product.laminating);
-        setValue("bahanPrice", product.bahan);
+    const handleEdit = (data) => {
+        setEditingProduct(data);
+        setValue("product", data.product);
+        setValue("description", data.description);
+        setValue("category", data.category);
+        setValue("merk", data.merk);
+        setValue("model", data.model);
+        setValue("image", data.image);
+        setValue("laminatingPrice", data.laminating);
+        setValue("bahanPrice", data.bahan);
         setIsModalOpen(true);
     };
 
@@ -103,7 +107,7 @@ function Product() {
         return total.toLocaleString()
     }
 
-    if (isLoading) {
+    if (isProductsLoading || isMerksLoading || isModelsLoading || isKategorisLoading) {
         return <>Please wait...</>
     }
 
@@ -118,8 +122,8 @@ function Product() {
             <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="block mb-2">Name:</label>
-                        <input disabled={isDelete} {...register("name")} className="w-full p-2 border rounded" required />
+                        <label className="block mb-2">Product:</label>
+                        <input disabled={isDelete} {...register("product")} className="w-full p-2 border rounded" required />
                     </div>
 
                     <div>
@@ -163,8 +167,8 @@ function Product() {
                         <label className="block mb-2">Category:</label>
                         <select {...register("category")} className="w-full p-2 border rounded" required>
                             <option value="">Select Category</option>
-                            {["Category A", "Category B", "Category C"].map((option) =>
-                                <option key={option} value={option}>{option}</option>
+                            {kategoris?.map((option, id) =>
+                                <option key={id} value={option.kategori}>{option.kategori}</option>
                             )}
                         </select>
                     </div>
@@ -173,8 +177,8 @@ function Product() {
                         <label className="block mb-2">Merk:</label>
                         <select {...register("merk")} className="w-full p-2 border rounded" required>
                             <option value="">Select Merk</option>
-                            {["Brand A", "Brand B", "Brand C"].map((option) =>
-                                <option key={option} value={option}>{option}</option>
+                            {merks?.map((option, id) =>
+                                <option key={id} value={option.merk}>{option.merk}</option>
                             )}
                         </select>
                     </div>
@@ -183,8 +187,8 @@ function Product() {
                         <label className="block mb-2">Model:</label>
                         <select {...register("model")} className="w-full p-2 border rounded" required>
                             <option value="">Select Model</option>
-                            {["Model A", "Model B", "Model C"].map((option) =>
-                                <option key={option} value={option}>{option}</option>
+                            {models?.filter(e=>e.merk == watch('merk')).map((option, id) =>
+                                <option key={id} value={id}>{option.model}</option>
                             )}
                         </select>
                     </div>
@@ -260,26 +264,26 @@ function Product() {
                 </form>
             </Modal>
 
-            <Table rows={['#', 'Image', 'Name', 'Description', 'Category', 'Merk', 'Model', 'Price', '']}>
-                {products?.map((product, id) => (
+            <Table rows={['#', 'Image', 'Product', 'Description', 'Category', 'Merk', 'Model', 'Price', '']}>
+                {products?.map((data, id) => (
                     <tr key={id} >
                         <td>{id + 1}</td>
                         <td>
-                            <img src={product.image} alt={product.name} className="w-24 h-24 object-cover rounded" />
+                            <img src={data.image} alt={data.name} className="w-24 h-24 object-cover rounded" />
                         </td>
-                        <td>{product.name} </td>
-                        <td>{product.description}</td>
-                        <td>{product.category}</td>
-                        <td>{product.merk}</td>
-                        <td>{product.model}</td>
-                        <td>{priceProduct(product)}</td>
+                        <td>{data.product} </td>
+                        <td>{data.description}</td>
+                        <td>{data.category}</td>
+                        <td>{data.merk}</td>
+                        <td>{data.model}</td>
+                        <td>{priceProduct(data)}</td>
                         <td>
                             <div className="flex flex-col gap-2 justify-center items-center">
-                                <button onClick={() => handleEdit(product)} className="btn-warning btn">
+                                <button onClick={() => handleEdit(data)} className="btn-warning btn">
                                     <Edit size={16} />
                                 </button>
 
-                                <button onClick={() => handleDelete(product)} className="btn-danger btn">
+                                <button onClick={() => handleDelete(data)} className="btn-danger btn">
                                     <Trash size={16} />
                                 </button>
                             </div>

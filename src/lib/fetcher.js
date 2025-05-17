@@ -12,3 +12,8 @@ const fetcher = async (path = '') => {
 export const fetcherProducts = () => fetcher('products')
 export const fetcherMerks= () => fetcher('merks')
 export const fetcherModels = () => fetcher('models')
+export const fetcherKategoris = () => fetcher('kategoris')
+export const fetcherBahans = () => fetcher('bahans')
+export const fetcherLaminatings = () => fetcher('laminatings')
+export const fetcherTransactions = () => fetcher('transactions')
+export const fetcherCustomers = () => fetcher('customers')
