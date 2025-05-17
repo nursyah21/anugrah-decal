@@ -16,7 +16,7 @@ login admin:
 - crud category [x]
 - crud bahan [x]
 - crud laminating [x]
-- crud product []
+- crud product [x]
 - crud customer []
 - crud transaksi []
 

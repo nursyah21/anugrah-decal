@@ -87,7 +87,7 @@ function Merk() {
                     <td>{id + 1}</td>
                     <td>{data.merk}</td>
                     <td>
-                        <div className="flex flex-col gap-2 justify-center items-center">
+                        <div className="flex gap-2 justify-center items-center">
                             <button onClick={() => handleEdit(data)} className="btn-warning btn">
                                 <Edit size={16} />
                             </button>
