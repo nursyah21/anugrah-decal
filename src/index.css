@@ -17,9 +17,21 @@
 }
 
 .btn-warning {
-    @apply bg-yellow-400 text-white;
+    @apply bg-yellow-600 text-white;
 }
 
 button.btn:hover {
     @apply opacity-70;
+}
+
+input:disabled, textarea:disabled, button:disabled {
+    @apply text-slate-500;
+}
+
+tbody tr {
+   @apply hover:bg-gray-100;
+}
+
+tbody tr td {
+ @apply p-4;   
 }

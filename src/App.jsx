@@ -13,6 +13,7 @@ import Laminating from "./pages/dashboard/productDetails/laminating"
 import Model from "./pages/dashboard/productDetails/model"
 import Bahan from "./pages/dashboard/productDetails/bahan"
 import Kategori from "./pages/dashboard/productDetails/kategori"
+import Order from "./pages/dashboard/order"
 
 function App() {
   const { user, initializeAuth, loading } = useAuthStore()
@@ -69,6 +70,7 @@ function App() {
           
           <Route path="customer" element={<Customer />} />
           <Route path="transaksi" element={<Transaksi />} />
+          <Route path="order" element={<Order />} />
         </Route>
 
       </Routes>

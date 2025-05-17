@@ -1,6 +1,6 @@
 function Table({rows=[], children}) {
     return ( <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white text-center">
+                    <table className="min-w-full bg-white">
                         <thead>
                             <tr className="bg-gray-100">
                                 {rows.map(item => 

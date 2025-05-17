@@ -7,6 +7,7 @@ import useSWR, { mutate } from "swr";
 import Modal from "../../components/modal";
 import Table from "../../components/table";
 import { db } from "../../lib/firebase";
+import clsx from "clsx";
 
 const fetcher = async () => {
     const querySnapshot = await getDocs(collection(db, 'products'));
@@ -19,12 +20,12 @@ const fetcher = async () => {
 function Product() {
     const { data: products, isLoading } = useSWR('products', fetcher);
     const [editingProduct, setEditingProduct] = useState(null);
-    const { register, handleSubmit, reset, setValue, watch } = useForm();
+    const [isDelete, setIsDelete] = useState(false);
+    const { register, handleSubmit, reset, setValue, watch, formState: {isSubmitting} } = useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const onSubmit = async (data) => {
         try {
-            console.log(data)
             const imageBase64 = watch('imageChange') ?? data.image
 
             if (!imageBase64 && !editingProduct) {
@@ -52,11 +53,15 @@ function Product() {
                     })),
                 ]
             };
-
-            if (editingProduct) {
+            if (isDelete) {
+                await deleteDoc(doc(db, "products", editingProduct.id));
+                toast.success("Product deleted successfully");
+            }
+            else if (editingProduct) {
                 await updateDoc(doc(db, "products", editingProduct.id), productData);
                 toast.success("Product updated successfully");
-            } else {
+            } 
+            else {
                 await addDoc(collection(db, "products"), productData);
                 toast.success("Product added successfully");
             }
@@ -66,22 +71,14 @@ function Product() {
             handleCloseModal();
             mutate('products');
         } catch (error) {
-            toast.error("Error saving product");
+            toast.error(isDelete ? "Error delete product" : editingProduct ? "Error update product" : "Error saving product");
             console.log(error)
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            try {
-                await deleteDoc(doc(db, "products", id));
-                toast.success("Product deleted successfully");
-                mutate('products');
-            } catch (error) {
-                toast.error("Error deleting product");
-                console.log(error)
-            }
-        }
+    const handleDelete = (product) => {
+        setIsDelete(true)
+        handleEdit(product)
     };
 
     const handleEdit = (product) => {
@@ -99,13 +96,17 @@ function Product() {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setIsDelete(false)
         setEditingProduct(null);
         reset();
     };
 
 
     const priceProduct = (product) => {
-        const total = Math.min(...product.laminating.map(item => item.price)) + Math.min(...product.bahan.map(item => item.price));
+        const laminating = Math.min(...product.laminating.map(item => item.price))
+        const bahan = Math.min(...product.bahan.map(item => item.price))
+        const fixInfinitiny = (num) => num === Infinity ? 0 : num
+        const total = fixInfinitiny(laminating) + fixInfinitiny(bahan);
         return total.toLocaleString()
     }
 
@@ -119,20 +120,20 @@ function Product() {
                         onClick={() => setIsModalOpen(true)}
                         className="btn btn-primary"
                     >
-                        Add New Product
+                        Add Product
                     </button>
                 )}
             </div>
 
-            <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={editingProduct ? 'Edit Product' : 'Add New Product'}>
+            <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Name:</label>
-                        <input {...register("name")} className="w-full p-2 border rounded" required />
+                        <input disabled={isDelete} {...register("name")} className="w-full p-2 border rounded" required />
                     </div>
 
                     <div>
-                        <label className="block mb-2">Image: *max 512kb
+                        <label className="mb-2 block">Image: *max 512kb
                             {(watch("image")?.length > 0 || watch("imageChange")?.length > 0) && (
                                 <img
                                     src={watch('imageChange') || watch("image")}
@@ -145,7 +146,7 @@ function Product() {
                             type="file"
                             accept="image/*"
                             {...register("image")}
-                            className="w-full p-2 border rounded"
+                            className={clsx(isDelete && 'hidden', "w-full p-2 border rounded")}
                             required={!editingProduct}
                             onChange={(e) => {
                                 const file = e.target.files[0]
@@ -165,10 +166,10 @@ function Product() {
 
                     <div>
                         <label className="block mb-2">Description:</label>
-                        <textarea {...register("description")} className="w-full p-2 border rounded" required />
+                        <textarea disabled={isDelete} {...register("description")} className="w-full p-2 border rounded" required />
                     </div>
 
-                    <div>
+                    <div className={isDelete && 'hidden'}>
                         <label className="block mb-2">Category:</label>
                         <select {...register("category")} className="w-full p-2 border rounded" required>
                             <option value="">Select Category</option>
@@ -178,7 +179,7 @@ function Product() {
                         </select>
                     </div>
 
-                    <div>
+                    <div className={isDelete && 'hidden'}>
                         <label className="block mb-2">Merk:</label>
                         <select {...register("merk")} className="w-full p-2 border rounded" required>
                             <option value="">Select Merk</option>
@@ -188,7 +189,7 @@ function Product() {
                         </select>
                     </div>
 
-                    <div>
+                    <div className={isDelete && 'hidden'}>
                         <label className="block mb-2">Model:</label>
                         <select {...register("model")} className="w-full p-2 border rounded" required>
                             <option value="">Select Model</option>
@@ -198,7 +199,7 @@ function Product() {
                         </select>
                     </div>
 
-                    <div>
+                    <div className={isDelete && 'hidden'}>
                         <h3 className="font-bold mb-2">Laminating</h3>
                         <div className="space-y-2">
                             <div className="flex px-2 items-center space-x-4 overflow-x-scroll">
@@ -229,7 +230,7 @@ function Product() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className={isDelete && 'hidden'}>
                         <h3 className="font-bold mb-2">Bahan</h3>
                         <div className="space-y-2">
                             <div className="flex px-2 items-center space-x-4 overflow-x-scroll">
@@ -261,34 +262,34 @@ function Product() {
 
                     <button
                         type="submit"
-                        disabled={isLoading}
-                        className="btn btn-primary"
+                        disabled={isSubmitting}
+                        className={clsx("btn", isDelete ? "btn-danger" : editingProduct ? "btn-warning" : "btn-primary")}
                     >
-                        {isLoading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+                        {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Product' : editingProduct ? 'Update Product' : 'Add Product')}
                     </button>
                 </form>
             </Modal>
 
-            <Table rows={['#', 'Image', 'Name', 'Description', 'Category', 'Merk', 'Model', 'Price', 'Action']}>
+            <Table rows={['#', 'Image', 'Name', 'Description', 'Category', 'Merk', 'Model', 'Price', '']}>
                 {products?.map((product, id) => (
-                    <tr key={product.id} className="border-b hover:bg-gray-50">
+                    <tr key={id} >
                         <td>{id + 1}</td>
-                        <td className="p-4">
+                        <td>
                             <img src={product.image} alt={product.name} className="w-24 h-24 object-cover rounded" />
                         </td>
-                        <td className="p-4 "> {product.name}  </td>
-                        <td className="p-4">{product.description}</td>
-                        <td className="p-4">{product.category}</td>
-                        <td className="p-4">{product.merk}</td>
-                        <td className="p-4">{product.model}</td>
-                        <td className="p-4">{priceProduct(product)}</td>
-                        <td className="p-4">
+                        <td>{product.name} </td>
+                        <td>{product.description}</td>
+                        <td>{product.category}</td>
+                        <td>{product.merk}</td>
+                        <td>{product.model}</td>
+                        <td>{priceProduct(product)}</td>
+                        <td>
                             <div className="flex flex-col gap-2 justify-center items-center">
                                 <button onClick={() => handleEdit(product)} className="btn-warning btn">
                                     <Edit size={16} />
                                 </button>
 
-                                <button onClick={() => handleDelete(product.id)} className="btn-danger btn">
+                                <button onClick={() => handleDelete(product)} className="btn-danger btn">
                                     <Trash size={16} />
                                 </button>
                             </div>
