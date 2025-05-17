@@ -1,4 +1,5 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc, getDocs } from "@firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
+import clsx from "clsx";
 import { Edit, Trash } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,19 +7,11 @@ import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Modal from "../../components/modal";
 import Table from "../../components/table";
+import { fetcherProducts } from "../../lib/fetcher";
 import { db } from "../../lib/firebase";
-import clsx from "clsx";
-
-const fetcher = async () => {
-    const querySnapshot = await getDocs(collection(db, 'products'));
-    return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-};
 
 function Product() {
-    const { data: products, isLoading } = useSWR('products', fetcher);
+    const { data: products, isLoading } = useSWR('products', fetcherProducts);
     const [editingProduct, setEditingProduct] = useState(null);
     const [isDelete, setIsDelete] = useState(false);
     const { register, handleSubmit, reset, setValue, watch, formState: {isSubmitting} } = useForm();
@@ -110,19 +103,16 @@ function Product() {
         return total.toLocaleString()
     }
 
+    if (isLoading) {
+        return <>Please wait...</>
+    }
+
     return (
         <div className="p-4 container">
 
             <div className="flex justify-between gap-x-4  items-center mb-4">
-                <h2 className="text-2xl font-semibold">Product {isLoading && '...'}</h2>
-                {!isLoading && (
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="btn btn-primary"
-                    >
-                        Add Product
-                    </button>
-                )}
+                <h2 className="text-2xl font-semibold">Product</h2>
+                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">Add Product</button>
             </div>
 
             <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>

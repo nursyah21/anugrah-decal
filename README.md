@@ -11,15 +11,15 @@ login admin:
 
 - login [x]
 - logout [x]
-- crud merk []
+- crud merk [x]
 - crud model []
+- crud bahan []
+- crud laminating []
 - crud product [x]
-    - crud bahan []
-    - crud laminating []
 - crud category []
 - crud customer []
 - crud transaction []
-- chart dashboard []
+- crud order []
 
 ## erd
 ![image](./anugrahdecal.jpg)
