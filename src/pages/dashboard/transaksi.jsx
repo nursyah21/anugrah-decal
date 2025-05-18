@@ -29,6 +29,8 @@ function Transaksi() {
         name: 'listProduct'
     })
 
+    console.log(data)
+
     const handleRemove = (array, id) => {
         if (array.fields.length < 1) return
         const index = array.fields.findIndex((item) => item.id === id);
@@ -45,6 +47,7 @@ function Transaksi() {
     }
     const onSubmit = async (data) => {
         try {
+
 
             if (isDelete) {
                 await deleteDoc(doc(db, 'transaksis', id));
@@ -85,6 +88,8 @@ function Transaksi() {
     if (isLoading || isCustomersLoading || isProductsLoading) {
         return <>Please wait...</>
     }
+
+    console.log(data)
 
     return (<>
         <div className="p-4 container">

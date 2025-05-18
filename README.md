@@ -19,7 +19,7 @@ login admin:
 - crud product [x]
 - crud customer [x]
 - crud transaksi [x]
-- dashboard []
+- dashboard [x]
 
 ## nice to have
 - pagination []

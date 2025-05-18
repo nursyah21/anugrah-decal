@@ -27,7 +27,8 @@ function Dashboard() {
                     <Navlink end={true} to={'/dashboard'}>
                         <Home />
                         <span className={clsx({ 'hidden': minimize })}>
-                            Dashboard                               </span>
+                            Dashboard
+                        </span>
                     </Navlink>
                     {
                         links.map(data => (
@@ -41,7 +42,7 @@ function Dashboard() {
                     }
                 </div>
 
-                <div className="flex-1 justify-start w-full items-end">
+                <div className="flex h-screen justify-start w-full items-end">
                     <button className="flex gap-4 font-bold hover:opacity-100 opacity-60 " onClick={() => { signOut(auth) }}>
                         <LogOut />
                         <span className={clsx({ 'hidden': minimize },)}>
