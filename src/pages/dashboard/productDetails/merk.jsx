@@ -66,7 +66,7 @@ function Merk() {
 
     return (<>
         <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">Add Merk</button>
-        <Modal isOpen={isOpen} handleOpen={handleOpen} title="Add Merk">
+        <Modal isOpen={isOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Merk' : isEditing ? 'Update Merk' : 'Add Merk'}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Merk:</label>

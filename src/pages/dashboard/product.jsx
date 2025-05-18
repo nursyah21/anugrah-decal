@@ -80,7 +80,7 @@ function Product() {
 
             reset();
             setEditingProduct(null);
-            handleCloseModal();
+            handleOpen();
             mutate('products');
         } catch (error) {
             toast.error(isDelete ? "Error delete product" : editingProduct ? "Error update product" : "Error saving product");
@@ -106,8 +106,8 @@ function Product() {
         setIsModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const handleOpen = () => {
+        setIsModalOpen(!isModalOpen);
         setIsDelete(false)
         setEditingProduct(null);
         reset();
@@ -131,10 +131,10 @@ function Product() {
 
             <div className="flex justify-between gap-x-4  items-center mb-4">
                 <h2 className="text-2xl font-semibold">Product</h2>
-                <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">Add Product</button>
+                <button onClick={handleOpen} className="btn btn-primary">Add Product</button>
             </div>
 
-            <Modal isOpen={isModalOpen} handleOpen={handleCloseModal} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>
+            <Modal isOpen={isModalOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Product:</label>

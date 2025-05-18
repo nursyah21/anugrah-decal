@@ -54,7 +54,7 @@ function Laminating() {
     const handleEdit = (data) => {
         handleOpen()
         setId(data.id)
-        setValue('laminating', data.merk)
+        setValue('laminating', data.laminating)
         setIsEditing(true)
     }
 
@@ -63,8 +63,8 @@ function Laminating() {
     }
 
     return (<>
-        <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">Add Laminating</button>
-        <Modal isOpen={isOpen} handleOpen={handleOpen} title="Add Laminating">
+        <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">{isDelete ? 'Delete Laminating' : isEditing ? 'Update Laminating' : 'Add Laminating'}</button>
+        <Modal isOpen={isOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Laminating' : isEditing ? 'Update Laminating' : 'Add Laminating'}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Laminating:</label>

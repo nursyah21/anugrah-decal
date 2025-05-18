@@ -69,7 +69,7 @@ function Model() {
 
     return (<>
         <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">Add Model</button>
-        <Modal isOpen={isOpen} handleOpen={handleOpen} title="Add Model">
+        <Modal isOpen={isOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Model' : isEditing ? 'Update Model' : 'Add Model'}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Merk:</label>
@@ -89,7 +89,7 @@ function Model() {
                     disabled={isSubmitting}
                     className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
                 >
-                    {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Merk' : isEditing ? 'Update Merk' : 'Add Merk')}
+                    {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Model' : isEditing ? 'Update Model' : 'Add Model')}
                 </button>
             </form>
         </Modal>

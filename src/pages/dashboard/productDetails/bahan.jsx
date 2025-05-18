@@ -64,7 +64,7 @@ function Bahan() {
 
     return (<>
         <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">Add Bahan</button>
-        <Modal isOpen={isOpen} handleOpen={handleOpen} title="Add Bahan">
+        <Modal isOpen={isOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Bahan' : isEditing ? 'Update Bahan' : 'Add Bahan'}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Bahan:</label>

@@ -64,7 +64,7 @@ function Kategori() {
     }
     return (<>
         <button onClick={handleOpen} className="my-2 w-full mb-4 btn btn-primary">Add Kategori</button>
-        <Modal isOpen={isOpen} handleOpen={handleOpen} title="Add Kategori">
+        <Modal isOpen={isOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Kategori' : isEditing ? 'Update Kategori' : 'Add Kategori'}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Kategori:</label>
