@@ -1,5 +1,5 @@
-import { Outlet } from "react-router";
-import Navlink from "../../../components/navlink";
+import { Outlet } from 'react-router';
+import Navlink from '../../../components/navlink';
 
 function ProductDetails() {
 

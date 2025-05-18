@@ -1,14 +1,14 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
-import clsx from "clsx";
-import { Edit, Trash } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import useSWR, { mutate } from "swr";
-import Modal from "../../components/modal";
-import Table from "../../components/table";
-import { fetcherCustomers } from "../../lib/fetcher";
-import { db } from "../../lib/firebase";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from '@firebase/firestore';
+import clsx from 'clsx';
+import { Edit, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useSWR, { mutate } from 'swr';
+import Modal from '../../components/modal';
+import Table from '../../components/table';
+import { fetcherCustomers } from '../../lib/fetcher';
+import { db } from '../../lib/firebase';
 
 function Customer() {
     const { data, isLoading } = useSWR('customers', fetcherCustomers);
@@ -26,22 +26,22 @@ function Customer() {
     const onSubmit = async (data) => {
         try {
             if (isDelete) {
-                await deleteDoc(doc(db, "customers", id));
-                toast.success("Customer delete successfully")
+                await deleteDoc(doc(db, 'customers', id));
+                toast.success('Customer delete successfully')
             }
             else if (isEditing) {
-                await updateDoc(doc(db, "customers", id), data)
-                toast.success("Customer update successfully")
+                await updateDoc(doc(db, 'customers', id), data)
+                toast.success('Customer update successfully')
             }
             else {
-                await addDoc(collection(db, "customers"), data)
-                toast.success("Customer added successfully")
+                await addDoc(collection(db, 'customers'), data)
+                toast.success('Customer added successfully')
             }
             reset()
             mutate('customers')
             handleOpen()
         } catch (error) {
-            toast.error(isDelete ? "Error delete customer" : isEditing ? "Error update customer" : "Error saving customer");
+            toast.error(isDelete ? 'Error delete customer' : isEditing ? 'Error update customer' : 'Error saving customer');
             console.log(error)
         }
     }
@@ -73,16 +73,16 @@ function Customer() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Nama:</label>
-                        <input disabled={isDelete} {...register("nama")} className="w-full p-2 border rounded" required />
+                        <input disabled={isDelete} {...register('nama')} className="w-full p-2 border rounded" required />
                     </div>
                     <div>
                         <label className="block mb-2">No Hp (WA):</label>
-                        <input disabled={isDelete} {...register("no_hp")} className="w-full p-2 border rounded" required />
+                        <input disabled={isDelete} {...register('no_hp')} className="w-full p-2 border rounded" required />
                     </div>
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
+                        className={clsx('btn', isDelete ? 'btn-danger' : isEditing ? 'btn-warning' : 'btn-primary')}
                     >
                         {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Customer' : isEditing ? 'Update Customer' : 'Add Customer')}
                     </button>

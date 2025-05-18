@@ -1,25 +1,20 @@
-import { useEffect } from "react"
-import { HashRouter, Navigate, Route, Routes } from "react-router"
-import Index from "./pages"
-import Customer from "./pages/dashboard/customer"
-import Dashboard from "./pages/dashboard/dashboard"
-import Product from "./pages/dashboard/product"
-import Bahan from "./pages/dashboard/productDetails/bahan"
-import Kategori from "./pages/dashboard/productDetails/kategori"
-import Laminating from "./pages/dashboard/productDetails/laminating"
-import Merk from "./pages/dashboard/productDetails/merk"
-import Model from "./pages/dashboard/productDetails/model"
-import ProductDetails from "./pages/dashboard/productDetails/productDetails"
-import Transaksi from "./pages/dashboard/transaksi"
-import Login from "./pages/login"
-import useAuthStore from "./store/authStore"
+import { HashRouter, Navigate, Route, Routes } from 'react-router'
+import Index from './pages'
+import Customer from './pages/dashboard/customer'
+import Dashboard from './pages/dashboard/dashboard'
+import Product from './pages/dashboard/product'
+import Bahan from './pages/dashboard/productDetails/bahan'
+import Kategori from './pages/dashboard/productDetails/kategori'
+import Laminating from './pages/dashboard/productDetails/laminating'
+import Merk from './pages/dashboard/productDetails/merk'
+import Model from './pages/dashboard/productDetails/model'
+import ProductDetails from './pages/dashboard/productDetails/productDetails'
+import Transaksi from './pages/dashboard/transaksi'
+import Login from './pages/login'
+import useAuthStore from './store/authStore'
 
 function App() {
-  const { user, initializeAuth, loading } = useAuthStore()
-
-  useEffect(() => {
-    initializeAuth()
-  }, [initializeAuth])
+  const { user, loading } = useAuthStore()
 
   const ProtectedRoute = ({ children }) => {
     if (loading) {
@@ -57,7 +52,7 @@ function App() {
         } >
           <Route index element={<Navigate to={'product'} />} />
           <Route path="product" element={<Product />} />
-          
+
           <Route path="product-details" element={<ProductDetails />}>
             <Route index element={<Navigate to={'merk'} />} />
             <Route path="merk" element={<Merk />} />
@@ -66,7 +61,7 @@ function App() {
             <Route path="kategori" element={<Kategori />} />
             <Route path="laminating" element={<Laminating />} />
           </Route>
-          
+
           <Route path="customer" element={<Customer />} />
           <Route path="transaksi" element={<Transaksi />} />
         </Route>

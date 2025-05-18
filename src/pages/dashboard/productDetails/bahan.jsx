@@ -1,14 +1,14 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
-import clsx from "clsx";
-import { Edit, Trash } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import useSWR, { mutate } from "swr";
-import Modal from "../../../components/modal";
-import Table from "../../../components/table";
-import { fetcherBahans } from "../../../lib/fetcher";
-import { db } from "../../../lib/firebase";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from '@firebase/firestore';
+import clsx from 'clsx';
+import { Edit, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useSWR, { mutate } from 'swr';
+import Modal from '../../../components/modal';
+import Table from '../../../components/table';
+import { fetcherBahans } from '../../../lib/fetcher';
+import { db } from '../../../lib/firebase';
 
 function Bahan() {
     const { data, isLoading } = useSWR('bahans', fetcherBahans);
@@ -26,22 +26,22 @@ function Bahan() {
     const onSubmit = async (data) => {
         try {
             if (isDelete) {
-                await deleteDoc(doc(db, "bahans", id));
-                toast.success("Bahan delete successfully")
+                await deleteDoc(doc(db, 'bahans', id));
+                toast.success('Bahan delete successfully')
             }
             else if (isEditing) {
-                await updateDoc(doc(db, "bahans", id), data)
-                toast.success("Bahan update successfully")
+                await updateDoc(doc(db, 'bahans', id), data)
+                toast.success('Bahan update successfully')
             }
             else {
-                await addDoc(collection(db, "bahans"), data)
-                toast.success("Bahan added successfully")
+                await addDoc(collection(db, 'bahans'), data)
+                toast.success('Bahan added successfully')
             }
             reset()
             mutate('bahans')
             handleOpen()
         } catch (error) {
-            toast.error(isDelete ? "Error delete bahan" : isEditing ? "Error update bahan" : "Error saving bahan");
+            toast.error(isDelete ? 'Error delete bahan' : isEditing ? 'Error update bahan' : 'Error saving bahan');
             console.log(error)
         }
     }
@@ -68,12 +68,12 @@ function Bahan() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Bahan:</label>
-                    <input disabled={isDelete} {...register("bahan")} className="w-full p-2 border rounded" required />
+                    <input disabled={isDelete} {...register('bahan')} className="w-full p-2 border rounded" required />
                 </div>
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
+                    className={clsx('btn', isDelete ? 'btn-danger' : isEditing ? 'btn-warning' : 'btn-primary')}
                 >
                     {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Bahan' : isEditing ? 'Update Bahan' : 'Add Bahan')}
                 </button>

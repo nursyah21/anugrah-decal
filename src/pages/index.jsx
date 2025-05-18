@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import {  useNavigate } from "react-router";
+import React, { useEffect } from 'react';
+import {  useNavigate } from 'react-router';
 
 function Index() {
     const navigate = useNavigate()

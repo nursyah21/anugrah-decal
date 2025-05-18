@@ -1,14 +1,14 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
-import clsx from "clsx";
-import { Edit, Trash } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import useSWR, { mutate } from "swr";
-import Modal from "../../../components/modal";
-import Table from "../../../components/table";
-import { fetcherMerks, fetcherModels } from "../../../lib/fetcher";
-import { db } from "../../../lib/firebase";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from '@firebase/firestore';
+import clsx from 'clsx';
+import { Edit, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useSWR, { mutate } from 'swr';
+import Modal from '../../../components/modal';
+import Table from '../../../components/table';
+import { fetcherMerks, fetcherModels } from '../../../lib/fetcher';
+import { db } from '../../../lib/firebase';
 
 
 function Model() {
@@ -30,22 +30,22 @@ function Model() {
     const onSubmit = async (data) => {
         try {
             if (isDelete) {
-                await deleteDoc(doc(db, "models", id));
-                toast.success("Model delete successfully")
+                await deleteDoc(doc(db, 'models', id));
+                toast.success('Model delete successfully')
             }
             else if (isEditing) {
-                await updateDoc(doc(db, "models", id), data)
-                toast.success("Model update successfully")
+                await updateDoc(doc(db, 'models', id), data)
+                toast.success('Model update successfully')
             }
             else {
-                await addDoc(collection(db, "models"), data)
-                toast.success("Model added successfully")
+                await addDoc(collection(db, 'models'), data)
+                toast.success('Model added successfully')
             }
             reset()
             mutate('models')
             handleOpen()
         } catch (error) {
-            toast.error(isDelete ? "Error delete model" : isEditing ? "Error update model" : "Error saving model");
+            toast.error(isDelete ? 'Error delete model' : isEditing ? 'Error update model' : 'Error saving model');
             console.log(error)
         }
     }
@@ -73,7 +73,7 @@ function Model() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Merk:</label>
-                    <select {...register("merk")} className="w-full p-2 border rounded" required>
+                    <select {...register('merk')} className="w-full p-2 border rounded" required>
                         <option value="" >Select Merk</option>
                         {merks?.map((option, id) =>
                             <option key={id} value={option.merk}>{option.merk}</option>
@@ -82,12 +82,12 @@ function Model() {
                 </div>
                 <div>
                     <label className="block mb-2">Model:</label>
-                    <input disabled={isDelete} {...register("model")} className="w-full p-2 border rounded" required />
+                    <input disabled={isDelete} {...register('model')} className="w-full p-2 border rounded" required />
                 </div>
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
+                    className={clsx('btn', isDelete ? 'btn-danger' : isEditing ? 'btn-warning' : 'btn-primary')}
                 >
                     {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Model' : isEditing ? 'Update Model' : 'Add Model')}
                 </button>

@@ -1,14 +1,14 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
-import clsx from "clsx";
-import { Edit, Trash } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import useSWR, { mutate } from "swr";
-import Modal from "../../../components/modal";
-import Table from "../../../components/table";
-import { fetcherKategoris } from "../../../lib/fetcher";
-import { db } from "../../../lib/firebase";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from '@firebase/firestore';
+import clsx from 'clsx';
+import { Edit, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useSWR, { mutate } from 'swr';
+import Modal from '../../../components/modal';
+import Table from '../../../components/table';
+import { fetcherKategoris } from '../../../lib/fetcher';
+import { db } from '../../../lib/firebase';
 
 
 function Kategori() {
@@ -27,22 +27,22 @@ function Kategori() {
     const onSubmit = async (data) => {
         try {
             if (isDelete) {
-                await deleteDoc(doc(db, "kategoris", id));
-                toast.success("kategori delete successfully")
+                await deleteDoc(doc(db, 'kategoris', id));
+                toast.success('kategori delete successfully')
             }
             else if (isEditing) {
-                await updateDoc(doc(db, "kategoris", id), data)
-                toast.success("kategori update successfully")
+                await updateDoc(doc(db, 'kategoris', id), data)
+                toast.success('kategori update successfully')
             }
             else {
-                await addDoc(collection(db, "kategoris"), data)
-                toast.success("kategori added successfully")
+                await addDoc(collection(db, 'kategoris'), data)
+                toast.success('kategori added successfully')
             }
             reset()
             mutate('kategoris')
             handleOpen()
         } catch (error) {
-            toast.error(isDelete ? "Error delete kategori" : isEditing ? "Error update kategori" : "Error saving kategori");
+            toast.error(isDelete ? 'Error delete kategori' : isEditing ? 'Error update kategori' : 'Error saving kategori');
             console.log(error)
         }
     }
@@ -68,12 +68,12 @@ function Kategori() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
                     <label className="block mb-2">Kategori:</label>
-                    <input disabled={isDelete} {...register("kategori")} className="w-full p-2 border rounded" required />
+                    <input disabled={isDelete} {...register('kategori')} className="w-full p-2 border rounded" required />
                 </div>
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
+                    className={clsx('btn', isDelete ? 'btn-danger' : isEditing ? 'btn-warning' : 'btn-primary')}
                 >
                     {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Kategori' : isEditing ? 'Update Kategori' : 'Add Kategori')}
                 </button>

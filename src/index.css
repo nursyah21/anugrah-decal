@@ -24,7 +24,7 @@ button.btn:hover {
     @apply opacity-70;
 }
 
-input:disabled, textarea:disabled, button:disabled {
+input:disabled, textarea:disabled, button:disabled, select:disabled {
     @apply opacity-60;
 }
 

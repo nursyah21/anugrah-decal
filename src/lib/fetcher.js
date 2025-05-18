@@ -1,5 +1,5 @@
-import { collection, getDocs } from "@firebase/firestore";
-import { db } from "./firebase";
+import { collection, getDocs } from '@firebase/firestore';
+import { db } from './firebase';
 
 const fetcher = async (path = '') => {
     const querySnapshot = await getDocs(collection(db, path));
@@ -15,5 +15,5 @@ export const fetcherModels = () => fetcher('models')
 export const fetcherKategoris = () => fetcher('kategoris')
 export const fetcherBahans = () => fetcher('bahans')
 export const fetcherLaminatings = () => fetcher('laminatings')
-export const fetcherTransactions = () => fetcher('transactions')
+export const fetcherTransactions = () => fetcher('transaksis')
 export const fetcherCustomers = () => fetcher('customers')

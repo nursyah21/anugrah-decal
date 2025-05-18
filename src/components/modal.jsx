@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X } from 'lucide-react';
 
 function Modal({ isOpen = false, handleOpen=()=>{}, title='', children }) {
     return isOpen && (

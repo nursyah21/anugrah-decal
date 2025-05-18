@@ -1,14 +1,14 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
-import clsx from "clsx";
-import { Edit, Minus, Trash, Watch } from "lucide-react";
-import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import useSWR, { mutate } from "swr";
-import Modal from "../../components/modal";
-import Table from "../../components/table";
-import { fetcherCustomers, fetcherProducts, fetcherTransactions } from "../../lib/fetcher";
-import { db } from "../../lib/firebase";
+import { addDoc, collection, deleteDoc, doc, serverTimestamp, Timestamp, updateDoc } from '@firebase/firestore';
+import clsx from 'clsx';
+import { Edit, Minus, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import useSWR, { mutate } from 'swr';
+import Modal from '../../components/modal';
+import Table from '../../components/table';
+import { fetcherCustomers, fetcherProducts, fetcherTransactions } from '../../lib/fetcher';
+import { db } from '../../lib/firebase';
 
 function Transaksi() {
     const { data: customers, isCustomersLoading } = useSWR('customers', fetcherCustomers);
@@ -26,8 +26,16 @@ function Transaksi() {
     })
     const productArray = useFieldArray({
         control,
-        name: "listProduct"
+        name: 'listProduct'
     })
+
+    const handleRemove = (array, id) => {
+        if (array.fields.length < 1) return
+        const index = array.fields.findIndex((item) => item.id === id);
+        if (index !== -1) {
+            array.remove(index);
+        }
+    };
 
     const handleOpen = () => {
         setIsOpen(!isOpen)
@@ -37,23 +45,24 @@ function Transaksi() {
     }
     const onSubmit = async (data) => {
         try {
+
             if (isDelete) {
-                await deleteDoc(doc(db, "transaksis", id));
-                toast.success("Transaksi delete successfully")
+                await deleteDoc(doc(db, 'transaksis', id));
+                toast.success('Transaksi delete successfully')
             }
             else if (isEditing) {
-                await updateDoc(doc(db, "transaksis", id), data)
-                toast.success("Transaksi update successfully")
+                await updateDoc(doc(db, 'transaksis', id), { ...data, date_transaction: serverTimestamp() })
+                toast.success('Transaksi update successfully')
             }
             else {
-                await addDoc(collection(db, "transaksis"), data)
-                toast.success("Transaksi added successfully")
+                await addDoc(collection(db, 'transaksis'), { ...data, date_transaction: serverTimestamp() })
+                toast.success('Transaksi added successfully')
             }
             reset()
             mutate('transaksis')
             handleOpen()
         } catch (error) {
-            toast.error(isDelete ? "Error delete transaksi" : isEditing ? "Error update transaksi" : "Error saving transaksi");
+            toast.error(isDelete ? 'Error delete transaksi' : isEditing ? 'Error update transaksi' : 'Error saving transaksi');
             console.log(error)
         }
     }
@@ -67,7 +76,9 @@ function Transaksi() {
         handleOpen()
         setId(data.id)
         setValue('customer', data.customer)
-        setValue('product', data.product)
+        setValue('status_pembayaran', data.status_pembayaran)
+        setValue('status_pengerjaan', data.status_pengerjaan)
+        setValue('listProduct', data.listProduct)
         setIsEditing(true)
     }
 
@@ -85,10 +96,28 @@ function Transaksi() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Customer:</label>
-                        <select {...register('customer')} className="w-full p-2 border rounded" required>
+                        <select disabled={isEditing || isDelete} {...register('customer')} className="w-full p-2 border rounded" required>
                             <option value=''>Select Customer</option>
                             {customers?.map((option, id) =>
                                 <option key={id} value={option.nama}>{option.nama}</option>
+                            )}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-2">Status Pembayaran:</label>
+                        <select {...register('status_pembayaran')} className="w-full p-2 border rounded" required>
+                            <option value=''>Select Status Pembayaran</option>
+                            {['DP', 'Lunas']?.map((option, id) =>
+                                <option key={id} value={option}>{option}</option>
+                            )}
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-2">Status Pengerjaan:</label>
+                        <select {...register('status_pengerjaan')} className="w-full p-2 border rounded" required>
+                            <option value=''>Select Status Pengerjaan</option>
+                            {['menunggu antrian', 'sedang dikerjakan', 'sudah selesai']?.map((option, id) =>
+                                <option key={id} value={option}>{option}</option>
                             )}
                         </select>
                     </div>
@@ -99,46 +128,57 @@ function Transaksi() {
                                 const selectedProduct = products?.find(p => p.product === watch(`listProduct.${id}.product`));
                                 return (
                                     <div key={id} className="flex gap-2 my-2 w-full">
-                                        <select {...register(`listProduct.${id}.product`)} className="flex-1 p-2 border rounded" required>
+                                        <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.product`)} className="flex-1 p-2 border rounded" required>
                                             <option value="">Select Product</option>
                                             {products?.map((option, index) =>
                                                 <option key={index} value={option.product}>{option.product}</option>
                                             )}
                                         </select>
-                                        <select className=" p-2 border rounded" required>
+                                        <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.bahan`)} className=" p-2 border rounded" required>
                                             <option value="">Select Bahan</option>
                                             {selectedProduct?.bahan?.map((option, index) =>
                                                 <option key={index} value={option.price}>{option.bahan}</option>
                                             )}
                                         </select>
-                                        <select className=" border rounded" required>
+                                        <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.laminating`)} className=" border rounded" required>
                                             <option value="">Select Laminating</option>
                                             {selectedProduct?.laminating?.map((option, index) =>
                                                 <option key={index} value={option.price}>{option.laminating}</option>
                                             )}
                                         </select>
-                                        <input type="number" className="w-20 border p-2 rounded" placeholder="1" required />
-                                        <button type="button">
-                                            <Minus className="hover:opacity-70" />
-                                        </button>
+                                        <input disabled={isEditing || isDelete} {...register(`listProduct.${id}.qty`)} type="number" className="w-20 border p-2 rounded" placeholder="1" required />
+                                        {!(isEditing || isDelete) &&
+                                            <button type="button" onClick={() => handleRemove(productArray, field.id)}>
+                                                <Minus className="hover:opacity-70" />
+                                            </button>
+                                        }
                                     </div>
                                 );
                             })
                         }
-                        <button className="btn border w-full" type="button" onClick={() => productArray.append({ id: Date.now() })}>
-                            Add Product
-                        </button>
+                        {!(isEditing || isDelete) &&
+                            <button className="btn border w-full" type="button" onClick={() => productArray.append({ id: Date.now() })}>
+                                Add Product
+                            </button>
+                        }
                     </div>
                     <div>
                         <label className="block mb-2">Total Harga:</label>
-                        <h2>Rp{(10000).toLocaleString()}</h2>
+                        {(() => {
+                            const total = watch('listProduct')?.
+                                map(e => (Number(e?.bahan) + Number(e?.laminating)) * Number(e?.qty))
+                                .reduce((acc, cur) => acc + cur, 0)
+                            setValue('price', total)
+                            return <>Rp{total.toLocaleString()}</>
+                        })()}
+                        <input type="hidden" {...register('price')} />
                     </div>
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={clsx("btn", isDelete ? "btn-danger" : isEditing ? "btn-warning" : "btn-primary")}
+                        className={clsx('btn', isDelete ? 'btn-danger' : isEditing ? 'btn-warning' : 'btn-primary')}
                     >
-                        {isSubmitting ? 'Saving...' : (isDelete ? 'Delete Transaksi' : isEditing ? 'Update Transaksi' : 'Add Transaksi')}
+                        {isSubmitting ? 'Saving...' : isDelete ? 'Delete Transaksi' : isEditing ? 'Update Transaksi' : 'Add Transaksi'}
                     </button>
                 </form>
             </Modal>
@@ -146,6 +186,15 @@ function Transaksi() {
                 {data?.map((data, id) => (
                     <tr key={id} >
                         <td>{id + 1}</td>
+                        <td>
+                            {data.listProduct?.map((data, id) => <div key={id}>
+                                {data.product} ({data.qty}) <br />
+                            </div>)}
+                        </td>
+                        <td>{data.price}</td>
+                        <td>{data.date_transaction.toDate().toLocaleString('en-GB')}</td>
+                        <td>{data.status_pengerjaan}</td>
+                        <td>{data.status_pembayaran}</td>
                         <td>
                             <div className="flex gap-2 justify-center items-center">
                                 <button onClick={() => handleEdit(data)} className="btn-warning btn">

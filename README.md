@@ -18,7 +18,7 @@ login admin:
 - crud laminating [x]
 - crud product [x]
 - crud customer [x]
-- crud transaksi []
+- crud transaksi [x]
 
 ## nice to have
 - pagination []
