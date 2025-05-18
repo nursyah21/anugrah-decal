@@ -1,6 +1,6 @@
 import { signOut } from '@firebase/auth';
 import clsx from 'clsx';
-import { LogOut, Menu, Package, ReceiptText, ShoppingCart, Users } from 'lucide-react';
+import { Home, LogOut, Menu, Package, ReceiptText, ShoppingCart, Users } from 'lucide-react';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 import decal from '../../assets/adecal1.png';
@@ -24,6 +24,11 @@ function Dashboard() {
                     <img src={decal} alt="logo" className={clsx('w-20', { 'hidden': minimize })} />
                 </div>
                 <div className="flex gap-y-8 flex-col ">
+                    <Navlink end={true} to={'/dashboard'}>
+                        <Home />
+                        <span className={clsx({ 'hidden': minimize })}>
+                            Dashboard                               </span>
+                    </Navlink>
                     {
                         links.map(data => (
                             <Navlink key={data.text} to={data.to}>
@@ -36,8 +41,7 @@ function Dashboard() {
                     }
                 </div>
 
-
-                <div className="flex h-screen justify-start w-full items-end">
+                <div className="flex-1 justify-start w-full items-end">
                     <button className="flex gap-4 font-bold hover:opacity-100 opacity-60 " onClick={() => { signOut(auth) }}>
                         <LogOut />
                         <span className={clsx({ 'hidden': minimize },)}>
@@ -45,6 +49,7 @@ function Dashboard() {
                         </span>
                     </button>
                 </div>
+
             </div>
             <div className="flex flex-1 container m-4">
                 <Outlet />

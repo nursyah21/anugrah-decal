@@ -105,7 +105,7 @@ function Transaksi() {
                     </div>
                     <div>
                         <label className="block mb-2">Status Pembayaran:</label>
-                        <select {...register('status_pembayaran')} className="w-full p-2 border rounded" required>
+                        <select disabled={isDelete} {...register('status_pembayaran')} className="w-full p-2 border rounded" required>
                             <option value=''>Select Status Pembayaran</option>
                             {['DP', 'Lunas']?.map((option, id) =>
                                 <option key={id} value={option}>{option}</option>
@@ -114,7 +114,7 @@ function Transaksi() {
                     </div>
                     <div>
                         <label className="block mb-2">Status Pengerjaan:</label>
-                        <select {...register('status_pengerjaan')} className="w-full p-2 border rounded" required>
+                        <select disabled={isDelete} {...register('status_pengerjaan')} className="w-full p-2 border rounded" required>
                             <option value=''>Select Status Pengerjaan</option>
                             {['menunggu antrian', 'sedang dikerjakan', 'sudah selesai']?.map((option, id) =>
                                 <option key={id} value={option}>{option}</option>
@@ -182,10 +182,11 @@ function Transaksi() {
                     </button>
                 </form>
             </Modal>
-            <Table rows={['#', 'Produk', 'Total Harga', 'Tanggal', 'Status Pengerjaan', 'Status Pembayaran', '']}>
+            <Table rows={['#', 'Customer', 'Produk', 'Total Harga', 'Tanggal', 'Status Pengerjaan', 'Status Pembayaran', '']}>
                 {data?.map((data, id) => (
                     <tr key={id} >
                         <td>{id + 1}</td>
+                        <td>{data.customer}</td>
                         <td>
                             {data.listProduct?.map((data, id) => <div key={id}>
                                 {data.product} ({data.qty}) <br />
