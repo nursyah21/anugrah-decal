@@ -22,8 +22,8 @@ function Product() {
     const [isDelete, setIsDelete] = useState(false);
     const { control, register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm({
         defaultValues: {
-            listBahan: [{ id: Date.now(), bahan:'',price:0 }],
-            listLaminating: [{ id: Date.now(), laminating:'', price:0 }],
+            listBahan: [{ id: Date.now(), bahan: '', price: 0 }],
+            listLaminating: [{ id: Date.now(), laminating: '', price: 0 }],
         }
     });
     const bahanArray = useFieldArray({
@@ -36,7 +36,7 @@ function Product() {
     })
 
     const handleRemove = (array, id) => {
-        if(array.fields.length < 1) return
+        if (array.fields.length < 1) return
         const index = array.fields.findIndex((item) => item.id === id);
         if (index !== -1) {
             array.remove(index);
@@ -64,7 +64,7 @@ function Product() {
                 laminating: watch('listLaminating'),
                 bahan: watch('listBahan')
             };
-             
+
             if (isDelete) {
                 await deleteDoc(doc(db, "products", editingProduct.id));
                 toast.success("Product deleted successfully");
@@ -137,12 +137,12 @@ function Product() {
             <Modal isOpen={isModalOpen} handleOpen={handleOpen} title={isDelete ? 'Delete Product' : editingProduct ? 'Edit Product' : 'Add Product'}>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="block mb-2">Product:</label>
+                        <label className=" mb-2">Product:</label>
                         <input placeholder="product" disabled={isDelete} {...register('product')} className="w-full p-2 border rounded" required />
                     </div>
 
                     <div>
-                        <label className="mb-2 block">Image: *max 100kb
+                        <label className="mb-2 ">Image: *max 100kb
                             {(watch("image")?.length > 0 || watch("imageChange")?.length > 0) && (
                                 <img
                                     src={watch('imageChange') || watch("image")}
@@ -174,12 +174,12 @@ function Product() {
                     </div>
 
                     <div>
-                        <label className="block mb-2">Description:</label>
+                        <label className=" mb-2">Description:</label>
                         <textarea placeholder="deskripsi" disabled={isDelete} {...register("description")} className="w-full p-2 border rounded" required />
                     </div>
 
                     <div className={isDelete && 'hidden'}>
-                        <label className="block mb-2">Category:</label>
+                        <label className=" mb-2">Category:</label>
                         <select {...register("category")} className="w-full p-2 border rounded" required>
                             <option value="">Select Category</option>
                             {kategoris?.map((option, id) =>
@@ -189,7 +189,7 @@ function Product() {
                     </div>
 
                     <div className={isDelete && 'hidden'}>
-                        <label className="block mb-2">Merk:</label>
+                        <label className=" mb-2">Merk:</label>
                         <select {...register("merk")} className="w-full p-2 border rounded" required>
                             <option value="">Select Merk</option>
                             {merks?.map((option, id) =>
@@ -199,7 +199,7 @@ function Product() {
                     </div>
 
                     <div className={clsx(isDelete && 'hidden')}>
-                        <label className="block mb-2">Model:</label>
+                        <label className="mb-2">Model:</label>
                         <select {...register("model")} className="w-full p-2 border rounded" required>
                             <option value="">Select Model</option>
                             {models?.filter(e => e.merk == watch('merk')).map((option, id) =>
@@ -209,7 +209,7 @@ function Product() {
                     </div>
 
                     <div className={isDelete && 'hidden'}>
-                        <h3 className="font-bold mb-2">Bahan</h3>
+                        <h3 className="mb-2">Bahan:</h3>
                         {
                             bahanArray.fields.map((field, id) => <div className="flex gap-2 my-2" key={id}>
                                 <select {...register(`listBahan.${id}.bahan`)} className="w-full p-2 border rounded" required>
@@ -230,7 +230,7 @@ function Product() {
                     </div>
 
                     <div className={isDelete && 'hidden'}>
-                        <h3 className="font-bold mb-2">Laminating</h3>
+                        <h3 className="mb-2">Laminating:</h3>
                         {
                             laminatingArray.fields.map((field, id) => <div className="flex gap-2 my-2" key={id}>
                                 <select {...register(`listLaminating.${id}.bahan`)} className="w-full p-2 border rounded" required>

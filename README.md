@@ -17,7 +17,7 @@ login admin:
 - crud bahan [x]
 - crud laminating [x]
 - crud product [x]
-- crud customer []
+- crud customer [x]
 - crud transaksi []
 
 ## nice to have

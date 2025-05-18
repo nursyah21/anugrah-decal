@@ -88,7 +88,7 @@ function Customer() {
                     </button>
                 </form>
             </Modal>
-            <Table rows={['#', 'Name', 'Number Phone (WA)', '']}>
+            <Table rows={['#', 'Nama', 'Nomor HP (WA)', '']}>
                 {data?.map((data, id) => (
                     <tr key={id} >
                         <td>{id + 1}</td>
