@@ -1,8 +1,8 @@
 import { addDoc, collection, deleteDoc, doc, updateDoc } from "@firebase/firestore";
 import clsx from "clsx";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Minus, Trash, Watch } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import useSWR, { mutate } from "swr";
 import Modal from "../../components/modal";
@@ -19,11 +19,16 @@ function Transaksi() {
     const [id, setId] = useState()
     const [isDelete, setIsDelete] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
-    const { control, register, handleSubmit, reset, setValue, formState: { isSubmitting } } = useForm({
+    const { control, register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm({
         defaultValues: {
-            listProduct: [{id:Date.now(), product:'', }]
+            listProduct: [{ id: Date.now(), product: [], }]
         }
     })
+    const productArray = useFieldArray({
+        control,
+        name: "listProduct"
+    })
+
     const handleOpen = () => {
         setIsOpen(!isOpen)
         setIsDelete(false)
@@ -61,8 +66,8 @@ function Transaksi() {
     const handleEdit = (data) => {
         handleOpen()
         setId(data.id)
-        setValue('nama', data.nama)
-        setValue('no_hp', data.no_hp)
+        setValue('customer', data.customer)
+        setValue('product', data.product)
         setIsEditing(true)
     }
 
@@ -80,11 +85,53 @@ function Transaksi() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
                         <label className="block mb-2">Customer:</label>
-                        {/* <input disabled={isDelete} {...register("nama")} className="w-full p-2 border rounded" required /> */}
+                        <select {...register('customer')} className="w-full p-2 border rounded" required>
+                            <option value=''>Select Customer</option>
+                            {customers?.map((option, id) =>
+                                <option key={id} value={option.nama}>{option.nama}</option>
+                            )}
+                        </select>
                     </div>
                     <div>
                         <label className="block mb-2">Product:</label>
-                        {/* <input disabled={isDelete} {...register("no_hp")} className="w-full p-2 border rounded" required /> */}
+                        {
+                            productArray.fields.map((field, id) => {
+                                const selectedProduct = products?.find(p => p.product === watch(`listProduct.${id}.product`));
+                                return (
+                                    <div key={id} className="flex gap-2 my-2 w-full">
+                                        <select {...register(`listProduct.${id}.product`)} className="flex-1 p-2 border rounded" required>
+                                            <option value="">Select Product</option>
+                                            {products?.map((option, index) =>
+                                                <option key={index} value={option.product}>{option.product}</option>
+                                            )}
+                                        </select>
+                                        <select className=" p-2 border rounded" required>
+                                            <option value="">Select Bahan</option>
+                                            {selectedProduct?.bahan?.map((option, index) =>
+                                                <option key={index} value={option.price}>{option.bahan}</option>
+                                            )}
+                                        </select>
+                                        <select className=" border rounded" required>
+                                            <option value="">Select Laminating</option>
+                                            {selectedProduct?.laminating?.map((option, index) =>
+                                                <option key={index} value={option.price}>{option.laminating}</option>
+                                            )}
+                                        </select>
+                                        <input type="number" className="w-20 border p-2 rounded" placeholder="1" required />
+                                        <button type="button">
+                                            <Minus className="hover:opacity-70" />
+                                        </button>
+                                    </div>
+                                );
+                            })
+                        }
+                        <button className="btn border w-full" type="button" onClick={() => productArray.append({ id: Date.now() })}>
+                            Add Product
+                        </button>
+                    </div>
+                    <div>
+                        <label className="block mb-2">Total Harga:</label>
+                        <h2>Rp{(10000).toLocaleString()}</h2>
                     </div>
                     <button
                         type="submit"
