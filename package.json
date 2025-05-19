@@ -8,9 +8,15 @@
     "lint": "eslint .",
     "build": "yarn lint && vite build",
     "preview": "serve ./dist",
+    "preview:no-out": "serve ./dist > nul 2>&1",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "deploy": "yarn build && surge --domain https://test-anugrahdecal.surge.sh dist/"
+    "loadtest:prod": "autocannon -c 200 http://localhost:3333",
+    "loadtest:preview": "autocannon -c 200 http://localhost:3000",
+    "prod:up":"docker compose up -d",
+    "prod:rebuild":"docker compose up -d --build",
+    "prod:down":"docker compose down",
+    "deploy": "surge --domain https://test-anugrahdecal.surge.sh dist/"
   },
   "dependencies": {
     "@firebase/app": "^0.12.1",
@@ -37,6 +43,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "autocannon": "^8.0.0",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",

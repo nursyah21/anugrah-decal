@@ -1,5 +1,16 @@
 import test, { expect } from '@playwright/test';
-import './setupLogin'
+
+test.beforeEach('setup login', async ({ page }) => {
+  await page.goto('/')
+  await expect(page).toHaveURL('/#/login')
+
+  await page.locator('input[name="email"]').fill('admin@gmail.com')
+  await page.locator('input[name="password"]').fill('password')
+  await page.click('button[type="submit"]')
+
+  await expect(page).toHaveURL('/#/dashboard')
+
+});
 
 test('crud merk', async ({ page }) => {
 

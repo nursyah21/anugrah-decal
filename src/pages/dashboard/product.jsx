@@ -36,7 +36,7 @@ function Product() {
     })
 
     const handleRemove = (array, id) => {
-        if (array.fields.length < 1) return
+        if (array.fields.length <= 1) return
         const index = array.fields.findIndex((item) => item.id === id);
         if (index !== -1) {
             array.remove(index);
@@ -178,9 +178,9 @@ function Product() {
                         <textarea placeholder="deskripsi" disabled={isDelete} {...register('description')} className="w-full p-2 border rounded" required />
                     </div>
 
-                    <div className={isDelete && 'hidden'}>
+                    <div>
                         <label className=" mb-2">Category:</label>
-                        <select {...register('category')} className="w-full p-2 border rounded" required>
+                        <select disabled={isDelete} {...register('category')} className="w-full p-2 border rounded" required>
                             <option value="">Select Category</option>
                             {kategoris?.map((option, id) =>
                                 <option key={id} value={option.kategori}>{option.kategori}</option>
@@ -188,9 +188,9 @@ function Product() {
                         </select>
                     </div>
 
-                    <div className={isDelete && 'hidden'}>
+                    <div>
                         <label className=" mb-2">Merk:</label>
-                        <select {...register('merk')} className="w-full p-2 border rounded" required>
+                        <select disabled={isDelete} {...register('merk')} className="w-full p-2 border rounded" required>
                             <option value="">Select Merk</option>
                             {merks?.map((option, id) =>
                                 <option key={id} value={option.merk}>{option.merk}</option>
@@ -198,9 +198,9 @@ function Product() {
                         </select>
                     </div>
 
-                    <div className={clsx(isDelete && 'hidden')}>
+                    <div>
                         <label className="mb-2">Model:</label>
-                        <select {...register('model')} className="w-full p-2 border rounded" required>
+                        <select disabled={isDelete} {...register('model')} className="w-full p-2 border rounded" required>
                             <option value="">Select Model</option>
                             {models?.filter(e => e.merk == watch('merk')).map((option, id) =>
                                 <option key={id} value={option.model}>{option.model}</option>
@@ -208,46 +208,54 @@ function Product() {
                         </select>
                     </div>
 
-                    <div className={isDelete && 'hidden'}>
+                    <div>
                         <h3 className="mb-2">Bahan:</h3>
                         {
                             bahanArray.fields.map((field, id) => <div className="flex gap-2 my-2" key={id}>
-                                <select {...register(`listBahan.${id}.bahan`)} className="w-full p-2 border rounded" required>
+                                <select disabled={isDelete} {...register(`listBahan.${id}.bahan`)} className="w-full p-2 border rounded" required>
                                     <option value="" >Select Bahan</option>
                                     {bahans?.map((option, idx) =>
                                         <option key={idx} value={option.bahan}>{option.bahan}</option>
                                     )}
                                 </select>
-                                <input {...register(`listBahan.${id}.price`)} type="number" placeholder="10000" className="w-full p-2 border rounded" required />
-                                <button type="button" onClick={() => handleRemove(bahanArray, field.id)}>
-                                    <Minus className="hover:opacity-70" />
-                                </button>
+                                <input disabled={isDelete} {...register(`listBahan.${id}.price`)} type="number" placeholder="10000" className="w-full p-2 border rounded" required />
+                                {!isDelete &&
+                                    <button type="button" onClick={() => handleRemove(bahanArray, field.id)}>
+                                        <Minus className="hover:opacity-70" />
+                                    </button>
+                                }
                             </div>)
                         }
-                        <button className="btn border w-full" type="button" onClick={() => bahanArray.append({ id: Date.now() })}>
-                            Add Bahan
-                        </button>
+                        {!isDelete &&
+                            <button className="btn border w-full" type="button" onClick={() => bahanArray.append({ id: Date.now() })}>
+                                Add Bahan
+                            </button>
+                        }
                     </div>
 
-                    <div className={isDelete && 'hidden'}>
+                    <div>
                         <h3 className="mb-2">Laminating:</h3>
                         {
                             laminatingArray.fields.map((field, id) => <div className="flex gap-2 my-2" key={id}>
-                                <select {...register(`listLaminating.${id}.laminating`)} className="w-full p-2 border rounded" required>
+                                <select disabled={isDelete} {...register(`listLaminating.${id}.laminating`)} className="w-full p-2 border rounded" required>
                                     <option value="" >Select Laminating</option>
                                     {laminatings?.map((option, idx) =>
                                         <option key={idx} value={option.laminating}>{option.laminating}</option>
                                     )}
                                 </select>
-                                <input {...register(`listLaminating.${id}.price`)} type="number" placeholder="10000" className="w-full p-2 border rounded" required />
-                                <button type="button" onClick={() => handleRemove(laminatingArray, field.id)}>
-                                    <Minus className="hover:opacity-70" />
-                                </button>
+                                <input disabled={isDelete} {...register(`listLaminating.${id}.price`)} type="number" placeholder="10000" className="w-full p-2 border rounded" required />
+                                {!isDelete &&
+                                    <button type="button" onClick={() => handleRemove(laminatingArray, field.id)}>
+                                        <Minus className="hover:opacity-70" />
+                                    </button>
+                                }
                             </div>)
                         }
-                        <button className="btn border w-full" type="button" onClick={() => laminatingArray.append({ id: Date.now() })}>
-                            Add Laminating
-                        </button>
+                        {!isDelete &&
+                            <button className="btn border w-full" type="button" onClick={() => laminatingArray.append({ id: Date.now() })}>
+                                Add Laminating
+                            </button>
+                        }
                     </div>
 
                     <button
