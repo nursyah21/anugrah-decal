@@ -10,9 +10,7 @@ function DashboardIndex() {
     if (isLoading) {
         return <>Please wait...</>
     }
-
-    console.log(data)
-
+    
     return (<>
         <div className="p-4 container">
             <div className='flex justify-between'>
@@ -21,17 +19,17 @@ function DashboardIndex() {
             </div>
 
             <div className="flex gap-4 py-4">
-                <div className="flex-1 p-8 shadow-2xl max-w-[16] rounded-xl">
+                <div className="flex-1 p-8 shadow-2xl rounded-xl">
                     <h2 className="text-xl font-semibold">Total Transaksi</h2>
                     <span className="text-xl">{data.map(e => e.transaksi).reduce((acc, cur) => acc + cur, 0)}</span>
                 </div>
 
-                <div className="flex-1 p-8 shadow-2xl max-w-[16] rounded-xl">
+                <div className="flex-1 p-8 shadow-2xl rounded-xl">
                     <h2 className="text-xl font-semibold">Total Pendapatan</h2>
                     <span className="text-xl">Rp{data.map(e => e.pendapatan).reduce((acc, cur) => acc + cur, 0).toLocaleString()}</span>
                 </div>
             </div>
-            <div className='flex'>
+            <div className='flex gap-2'>
                 <div className="flex-1 p-8 shadow-2xl rounded-xl">
                     <h2 className="text-xl font-semibold my-4">Grafik Transaksi</h2>
                     <ResponsiveContainer width="100%" height={300}>

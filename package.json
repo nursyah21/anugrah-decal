@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "lint": "eslint .",
-    "serve": "serve ./dist",
+    "build": "yarn lint && vite build",
+    "preview": "serve ./dist",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "deploy": "yarn lint && yarn build && surge --domain https://test-anugrahdecal.surge.sh dist/"
+    "deploy": "yarn build && surge --domain https://test-anugrahdecal.surge.sh dist/"
   },
   "dependencies": {
     "@firebase/app": "^0.12.1",
