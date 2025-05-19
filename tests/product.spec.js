@@ -27,11 +27,7 @@ test('crud product', async ({ page }) => {
     await page.locator('select[name="model"]').selectOption({ index: 1 })
 
     await page.locator('select[name="model"]').selectOption({ index: 1 })
-    await page.locator('select[name="listBahan.0.bahan"]').selectOption({ index: 1 })
-    await page.locator('input[name="listBahan.0.price"]').fill('10000')
-
-    await page.locator('select[name="listLaminating.0.laminating"]').selectOption({ index: 1 })
-    await page.locator('input[name="listLaminating.0.price"]').fill('10000')
+    await page.locator('input[name="price"]').fill('10000')
 
     await page.click('button[type="submit"]')
     await expect(page.locator('td', { hasText: 'product1' }).first()).toBeVisible()

@@ -9,7 +9,7 @@
     "build": "yarn lint && vite build",
     "preview": "serve ./dist",
     "preview:no-out": "serve ./dist > nul 2>&1",
-    "test": "playwright test",
+    "test": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "loadtest:prod": "autocannon -c 200 http://localhost:3333",
     "loadtest:preview": "autocannon -c 200 http://localhost:3000",

@@ -55,6 +55,7 @@ function Laminating() {
         handleOpen()
         setId(data.id)
         setValue('laminating', data.laminating)
+        setValue('price', data.price)
         setIsEditing(true)
     }
 
@@ -70,6 +71,10 @@ function Laminating() {
                     <label className="block mb-2">Laminating:</label>
                     <input disabled={isDelete} {...register('laminating')} className="w-full p-2 border rounded" required />
                 </div>
+                <div>
+                    <label className="block mb-2">Price:</label>
+                    <input type='number' disabled={isDelete} {...register('price')} className="w-full p-2 border rounded" required />
+                </div>
                 <button
                     type="submit"
                     disabled={isSubmitting}
@@ -79,11 +84,12 @@ function Laminating() {
                 </button>
             </form>
         </Modal>
-        <Table rows={['#', 'Laminating', '']}>
+        <Table rows={['#', 'Laminating', 'Price', '']}>
             {data?.map((data, id) => (
                 <tr key={id} >
                     <td>{id + 1}</td>
                     <td>{data.laminating}</td>
+                    <td>{Number(data.price).toLocaleString()}</td>
                     <td>
                         <div className="flex gap-2 justify-center items-center">
                             <button onClick={() => handleEdit(data)} className="btn-warning btn">

@@ -19,7 +19,7 @@ test('crud merk', async ({ page }) => {
 
   // create merk
   await page.locator('button', { hasText: /add merk/i }).click()
-  
+
   await page.locator('input[name="merk"]').fill('merk1')
   await page.click('button[type="submit"]')
   await expect(page.locator('td', { hasText: 'merk1' }).first()).toBeVisible()
@@ -108,6 +108,7 @@ test('crud bahan', async ({ page }) => {
   await page.locator('button', { hasText: /add bahan/i }).click()
 
   await page.locator('input[name="bahan"]').fill('bahan1')
+  await page.locator('input[name="price"]').fill('10000')
   await page.click('button[type="submit"]')
   await expect(page.locator('td', { hasText: 'bahan1' }).first()).toBeVisible()
 
@@ -137,6 +138,8 @@ test('crud laminating', async ({ page }) => {
   await page.locator('button', { hasText: /add laminating/i }).click()
 
   await page.locator('input[name="laminating"]').fill('laminating1')
+  await page.locator('input[name="price"]').fill('10000')
+
   await page.click('button[type="submit"]')
   await expect(page.locator('td', { hasText: 'laminating1' }).first()).toBeVisible()
 

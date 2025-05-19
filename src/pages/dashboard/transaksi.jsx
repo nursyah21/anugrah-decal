@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, serverTimestamp, Timestamp, updateDoc } from '@firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, serverTimestamp, updateDoc } from '@firebase/firestore';
 import clsx from 'clsx';
 import { Edit, Minus, Trash } from 'lucide-react';
 import { useState } from 'react';
@@ -7,12 +7,14 @@ import toast from 'react-hot-toast';
 import useSWR, { mutate } from 'swr';
 import Modal from '../../components/modal';
 import Table from '../../components/table';
-import { fetcherCustomers, fetcherProducts, fetcherTransactions } from '../../lib/fetcher';
+import { fetcherBahans, fetcherCustomers, fetcherLaminatings, fetcherProducts, fetcherTransactions } from '../../lib/fetcher';
 import { db } from '../../lib/firebase';
 
 function Transaksi() {
     const { data: customers, isCustomersLoading } = useSWR('customers', fetcherCustomers);
     const { data: products, isProductsLoading } = useSWR('products', fetcherProducts);
+    const { data: bahans, isBahansLoading } = useSWR('bahans', fetcherBahans);
+    const { data: laminatings, isLaminatingsLoading } = useSWR('laminatings', fetcherLaminatings);
     const { data, isLoading } = useSWR('transaksis', fetcherTransactions);
 
     const [isOpen, setIsOpen] = useState(false)
@@ -29,7 +31,6 @@ function Transaksi() {
         name: 'listProduct'
     })
 
-    console.log(data)
 
     const handleRemove = (array, id) => {
         if (array.fields.length < 1) return
@@ -85,7 +86,7 @@ function Transaksi() {
         setIsEditing(true)
     }
 
-    if (isLoading || isCustomersLoading || isProductsLoading) {
+    if (isLoading || isCustomersLoading || isProductsLoading || isLaminatingsLoading || isBahansLoading) {
         return <>Please wait...</>
     }
 
@@ -130,24 +131,23 @@ function Transaksi() {
                         <label className="block mb-2">Product:</label>
                         {
                             productArray.fields.map((field, id) => {
-                                const selectedProduct = products?.find(p => p.product === watch(`listProduct.${id}.product`));
                                 return (
                                     <div key={id} className="flex gap-2 my-2 w-full">
                                         <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.product`)} className="flex-1 p-2 border rounded" required>
                                             <option value="">Select Product</option>
                                             {products?.map((option, index) =>
-                                                <option key={index} value={option.product}>{option.product}</option>
+                                                <option key={index} value={[option.product, option.price]}>{option.product}</option>
                                             )}
                                         </select>
                                         <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.bahan`)} className=" p-2 border rounded" required>
                                             <option value="">Select Bahan</option>
-                                            {selectedProduct?.bahan?.map((option, index) =>
+                                            {bahans?.map((option, index) =>
                                                 <option key={index} value={option.price}>{option.bahan}</option>
                                             )}
                                         </select>
                                         <select disabled={isEditing || isDelete} {...register(`listProduct.${id}.laminating`)} className=" border rounded" required>
                                             <option value="">Select Laminating</option>
-                                            {selectedProduct?.laminating?.map((option, index) =>
+                                            {laminatings?.map((option, index) =>
                                                 <option key={index} value={option.price}>{option.laminating}</option>
                                             )}
                                         </select>
@@ -171,7 +171,11 @@ function Transaksi() {
                         <label className="block mb-2">Total Harga:</label>
                         {(() => {
                             const total = watch('listProduct')?.
-                                map(e => (Number(e?.bahan) + Number(e?.laminating)) * Number(e?.qty))
+                                map(e => {
+                                    const priceProduct = Number(Array.isArray(e.product) ? 0 : e.product?.split(',')[1] ?? 0) 
+                                    console.log({priceProduct})
+                                    return ( priceProduct   + Number(e.bahan) + Number(e.laminating)) * Number(e.qty)
+                                })
                                 .reduce((acc, cur) => acc + cur, 0)
                             setValue('price', total)
                             return <>Rp{total.toLocaleString()}</>
@@ -194,10 +198,10 @@ function Transaksi() {
                         <td>{data.customer}</td>
                         <td>
                             {data.listProduct?.map((data, id) => <div key={id}>
-                                {data.product} ({data.qty}) <br />
+                                {data.product.split(',')[0]} ({data.qty}) <br />
                             </div>)}
                         </td>
-                        <td>{data.price}</td>
+                        <td>{data.price.toLocaleString()}</td>
                         <td>{data.date_transaction.toDate().toLocaleString('en-GB')}</td>
                         <td>{data.status_pengerjaan}</td>
                         <td>{data.status_pembayaran}</td>
