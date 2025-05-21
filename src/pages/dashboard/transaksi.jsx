@@ -128,7 +128,7 @@ function Transaksi() {
                         </select>
                     </div>
                     <div>
-                        <label className="block mb-2">Product:</label>
+                        <label className="block mb-2">Product: *product + ((bahan + laminating) x panjang/meter)</label>
                         {
                             productArray.fields.map((field, id) => {
                                 return (
@@ -173,8 +173,7 @@ function Transaksi() {
                             const total = watch('listProduct')?.
                                 map(e => {
                                     const priceProduct = Number(Array.isArray(e.product) ? 0 : e.product?.split(',')[1] ?? 0) 
-                                    console.log({priceProduct})
-                                    return ( priceProduct   + Number(e.bahan) + Number(e.laminating)) * Number(e.qty)
+                                    return (  priceProduct + (( Number(e.bahan) + Number(e.laminating) )  * Number(e.qty))   ) 
                                 })
                                 .reduce((acc, cur) => acc + cur, 0)
                             setValue('price', total)

@@ -84,7 +84,7 @@ function Laminating() {
                 </button>
             </form>
         </Modal>
-        <Table rows={['#', 'Laminating', 'Price', '']}>
+        <Table rows={['#', 'Laminating', 'Price / Meter', '']}>
             {data?.map((data, id) => (
                 <tr key={id} >
                     <td>{id + 1}</td>

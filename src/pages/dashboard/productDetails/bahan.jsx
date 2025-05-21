@@ -84,7 +84,7 @@ function Bahan() {
                 </button>
             </form>
         </Modal>
-        <Table rows={['#', 'Bahan', 'Price','']}>
+        <Table rows={['#', 'Bahan', 'Price / Meter','']}>
             {data?.map((data, id) => (
                 <tr key={id} >
                     <td>{id + 1}</td>
