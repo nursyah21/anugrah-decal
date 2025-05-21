@@ -20,8 +20,8 @@ export const fetcherCustomers = () => fetcher('customers')
 
 export const fetcherDashboards = async () => {
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // Awal bulan (misal: 1 Mei 2025)
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999); // Akhir bulan (misal: 31 Mei 2025)
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); 
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
     const querySnapshot = await getDocs(query(
         collection(db, 'transaksis'),
         where('date_transaction', '>=', startOfMonth),

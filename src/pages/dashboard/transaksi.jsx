@@ -198,7 +198,7 @@ function Transaksi() {
                         <td>{data.customer}</td>
                         <td>
                             {data.listProduct?.map((data, id) => <div key={id}>
-                                {data.product.split(',')[0]} ({data.qty}) <br />
+                                {data.product.split(',')[0]}, {data.qty}m <br />
                             </div>)}
                         </td>
                         <td>{data.price.toLocaleString()}</td>
